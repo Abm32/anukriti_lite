@@ -4,15 +4,40 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess  # nosec B404 - optional fixed-argument Solana CLI wrapper
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
-from typing import Any, Dict, Mapping
+from typing import Any, Dict, List, Mapping
 
 ATTESTATION_SCHEMA_VERSION = "anukriti.trial_export_attestation.v1"
 SIMULATION_ATTESTATION_SCHEMA_VERSION = "anukriti.simulation_result_attestation.v1"
 SOLANA_MEMO_PROGRAM_ID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 SOLANA_DEVNET_EXPLORER_BASE = "https://explorer.solana.com/tx"
+SOLANA_DEVNET_RPC_URL = "https://api.devnet.solana.com"
+SOLANA_MAINNET_RPC_URL = "https://api.mainnet-beta.solana.com"
+
+
+def resolve_solana_rpc_url(network: str = "devnet", rpc_url: str | None = None) -> str:
+    """
+    Resolve the Solana RPC URL for proof submission/lookup.
+
+    Set SOLANA_RPC_URL to a sponsor/provider endpoint such as Helius for reliable
+    hackathon demos. The public devnet endpoint remains the fallback.
+    """
+
+    if rpc_url:
+        return rpc_url
+    configured = os.getenv("SOLANA_RPC_URL", "").strip()
+    if configured:
+        return configured
+    if network == "mainnet-beta":
+        return SOLANA_MAINNET_RPC_URL
+    if network.startswith("http://") or network.startswith("https://"):
+        return network
+    return SOLANA_DEVNET_RPC_URL
 
 
 def canonicalize_attestation_payload(payload: Mapping[str, Any]) -> str:
@@ -183,11 +208,159 @@ def verify_trial_export_attestation_detail(
     }
 
 
+def _rpc_request(
+    method: str,
+    params: List[Any],
+    *,
+    network: str = "devnet",
+    rpc_url: str | None = None,
+    timeout_s: int = 20,
+) -> Dict[str, Any]:
+    url = resolve_solana_rpc_url(network=network, rpc_url=rpc_url)
+    body = json.dumps(
+        {
+            "jsonrpc": "2.0",
+            "id": "anukriti-proof",
+            "method": method,
+            "params": params,
+        }
+    ).encode("utf-8")
+    request = urllib.request.Request(  # nosec B310 - user-configured Solana RPC URL
+        url,
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout_s) as response:  # nosec B310
+            data = json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        return {
+            "ok": False,
+            "rpc_url": url,
+            "error": str(exc),
+        }
+    if data.get("error"):
+        return {
+            "ok": False,
+            "rpc_url": url,
+            "error": data["error"],
+        }
+    return {
+        "ok": True,
+        "rpc_url": url,
+        "result": data.get("result"),
+    }
+
+
+def fetch_solana_transaction(
+    signature: str,
+    *,
+    network: str = "devnet",
+    rpc_url: str | None = None,
+    timeout_s: int = 20,
+) -> Dict[str, Any]:
+    """Fetch a parsed Solana transaction for memo proof lookup."""
+
+    return _rpc_request(
+        "getTransaction",
+        [
+            signature,
+            {
+                "encoding": "jsonParsed",
+                "commitment": "confirmed",
+                "maxSupportedTransactionVersion": 0,
+            },
+        ],
+        network=network,
+        rpc_url=rpc_url,
+        timeout_s=timeout_s,
+    )
+
+
+def extract_anukriti_memos(transaction: Mapping[str, Any]) -> List[str]:
+    """Extract Anukriti memo strings from parsed transaction JSON/logs."""
+
+    memos: List[str] = []
+
+    def collect(value: Any) -> None:
+        if isinstance(value, str):
+            if "anukriti:" in value:
+                start = value.find("anukriti:")
+                memo = value[start:].strip().strip('"').strip("'")
+                if memo and memo not in memos:
+                    memos.append(memo)
+        elif isinstance(value, Mapping):
+            for child in value.values():
+                collect(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect(child)
+
+    collect(transaction)
+    return memos
+
+
+def verify_solana_memo_proof(
+    signature: str,
+    expected_memo: str,
+    *,
+    network: str = "devnet",
+    rpc_url: str | None = None,
+    timeout_s: int = 20,
+) -> Dict[str, Any]:
+    """Verify that a Solana transaction contains the expected Anukriti memo."""
+
+    tx = fetch_solana_transaction(
+        signature,
+        network=network,
+        rpc_url=rpc_url,
+        timeout_s=timeout_s,
+    )
+    if not tx.get("ok"):
+        return {
+            "valid": False,
+            "status": "rpc_error",
+            "signature": signature,
+            "network": network,
+            "rpc_url": tx.get("rpc_url"),
+            "error": tx.get("error"),
+            "expected_memo": expected_memo,
+            "memos": [],
+        }
+    result = tx.get("result")
+    if not result:
+        return {
+            "valid": False,
+            "status": "transaction_not_found",
+            "signature": signature,
+            "network": network,
+            "rpc_url": tx.get("rpc_url"),
+            "expected_memo": expected_memo,
+            "memos": [],
+        }
+    memos = extract_anukriti_memos(result)
+    memo_matches = expected_memo in memos
+    return {
+        "valid": memo_matches,
+        "status": "verified" if memo_matches else "memo_mismatch",
+        "signature": signature,
+        "network": network,
+        "rpc_url": tx.get("rpc_url"),
+        "expected_memo": expected_memo,
+        "memos": memos,
+        "slot": result.get("slot"),
+        "block_time": result.get("blockTime"),
+        "explorer_url": f"{SOLANA_DEVNET_EXPLORER_BASE}/{signature}?cluster={network}",
+    }
+
+
 def submit_memo_with_solana_cli(
     memo: str,
     *,
     network: str = "devnet",
     keypair_path: str | None = None,
+    rpc_url: str | None = None,
     timeout_s: int = 45,
 ) -> Dict[str, Any]:
     """
@@ -206,7 +379,7 @@ def submit_memo_with_solana_cli(
             "message": "Solana CLI is not installed on this host.",
         }
 
-    url = "https://api.devnet.solana.com" if network == "devnet" else network
+    url = resolve_solana_rpc_url(network=network, rpc_url=rpc_url)
     address_cmd = [solana_bin, "address", "--url", url]
     if keypair_path:
         address_cmd.extend(["--keypair", keypair_path])
@@ -268,5 +441,6 @@ def submit_memo_with_solana_cli(
         "submitted": True,
         "status": "submitted",
         "signature": signature,
+        "rpc_url": url,
         "explorer_url": f"{SOLANA_DEVNET_EXPLORER_BASE}/{signature}?cluster=devnet",
     }

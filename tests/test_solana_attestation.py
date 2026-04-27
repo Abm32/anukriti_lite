@@ -7,8 +7,11 @@ from src.solana_attestation import (
     SIMULATION_ATTESTATION_SCHEMA_VERSION,
     build_simulation_result_attestation,
     build_trial_export_attestation,
+    extract_anukriti_memos,
     hash_trial_export_payload,
+    resolve_solana_rpc_url,
     verify_trial_export_attestation,
+    verify_solana_memo_proof,
     verify_trial_export_attestation_detail,
 )
 
@@ -133,3 +136,69 @@ def test_simulation_attestation_uses_simulation_schema_and_detects_tamper():
     assert (
         verify_trial_export_attestation_detail(tampered, attestation)["valid"] is False
     )
+
+
+def test_resolve_solana_rpc_url_prefers_configured_provider(monkeypatch):
+    monkeypatch.setenv("SOLANA_RPC_URL", "https://example-helius-rpc.invalid")
+
+    assert resolve_solana_rpc_url("devnet") == "https://example-helius-rpc.invalid"
+
+
+def test_extract_anukriti_memos_from_parsed_transaction():
+    memo = "anukriti:anukriti.trial_export_attestation.v1:abc123"
+    transaction = {
+        "transaction": {
+            "message": {
+                "instructions": [
+                    {
+                        "programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                        "parsed": memo,
+                    }
+                ]
+            }
+        },
+        "meta": {
+            "logMessages": [
+                'Program log: Memo (len 52): "anukriti:other"',
+            ]
+        },
+    }
+
+    assert memo in extract_anukriti_memos(transaction)
+    assert "anukriti:other" in extract_anukriti_memos(transaction)
+
+
+def test_verify_solana_memo_proof_uses_rpc_result(monkeypatch):
+    memo = "anukriti:anukriti.trial_export_attestation.v1:abc123"
+
+    def fake_fetch(signature, *, network, rpc_url, timeout_s):
+        return {
+            "ok": True,
+            "rpc_url": "https://example-helius-rpc.invalid",
+            "result": {
+                "slot": 123,
+                "blockTime": 456,
+                "transaction": {
+                    "message": {
+                        "instructions": [
+                            {
+                                "programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                                "parsed": memo,
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+
+    monkeypatch.setattr("src.solana_attestation.fetch_solana_transaction", fake_fetch)
+
+    result = verify_solana_memo_proof(
+        "fake-signature",
+        memo,
+        rpc_url="https://example-helius-rpc.invalid",
+    )
+
+    assert result["valid"] is True
+    assert result["status"] == "verified"
+    assert result["memos"] == [memo]

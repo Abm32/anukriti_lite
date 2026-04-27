@@ -58,6 +58,34 @@ git remote -v
   - Partner fit map for Phantom, Helius, QVAC, Arcium, World ID, Squads/Altitude,
     and lower-fit partners.
 
+## Colosseum Resources Skill
+
+Installed with:
+
+```bash
+npx skills add ColosseumOrg/colosseum-resources --yes --global
+```
+
+Installed path:
+
+```text
+~/.agents/skills/colosseum-resources
+```
+
+The skill requires fetching the current resource corpus before recommending
+tools:
+
+```bash
+curl -s https://ColosseumOrg.github.io/hackathon-resources/current.json
+```
+
+The live corpus confirmed the near-term Anukriti partner choices:
+
+- Phantom for wallet UX.
+- Helius/RPC providers for proof submission and lookup.
+- QVAC for local explanations.
+- Arcium, World ID, and Squads/Altitude as roadmap/production hardening.
+
 ## Python Environment
 
 Do not use the default `python` directly. It is:
@@ -169,6 +197,20 @@ solana balance --url https://api.devnet.solana.com
 
 If Solana CLI is not installed, the demo still works in prepared-proof mode.
 
+Provider/RPC integration:
+
+```bash
+# Use Helius or another provider for reliable lookup/submission.
+SOLANA_RPC_URL=https://devnet.helius-rpc.com/?api-key=your_helius_key
+```
+
+New proof endpoints:
+
+```text
+GET /lite/phantom
+POST /attestations/lookup
+```
+
 ## Start Commands
 
 Once Python deps are installed:
@@ -275,8 +317,10 @@ If full tests are slow or pull models, at minimum verify:
    Phantom wallet signing + Helius RPC/proof lookup
    ```
 
-   Keep Arcium, World ID, and Squads/Altitude as roadmap or second-pass
-   integrations unless there is extra time.
+   The first pass is now implemented as `GET /lite/phantom`,
+   `SOLANA_RPC_URL`, and `POST /attestations/lookup`. Keep Arcium, World ID, and
+   Squads/Altitude as roadmap or second-pass integrations unless there is extra
+   time.
 
 ## Important Product Framing
 

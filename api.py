@@ -26,6 +26,7 @@ from fastapi import (
     Request,
     UploadFile,
 )
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
@@ -78,7 +79,9 @@ from src.solana_attestation import (
     SIMULATION_ATTESTATION_SCHEMA_VERSION,
     build_simulation_result_attestation,
     build_trial_export_attestation,
+    resolve_solana_rpc_url,
     submit_memo_with_solana_cli,
+    verify_solana_memo_proof,
     verify_trial_export_attestation_detail,
 )
 from src.tpmt_caller import interpret_tpmt
@@ -3606,6 +3609,29 @@ class AttestationSubmitRequest(BaseModel):
         default=None,
         description="Optional Solana keypair path. Defaults to the Solana CLI config.",
     )
+    rpc_url: Optional[str] = Field(
+        default=None,
+        description="Optional Solana RPC URL. Use a provider endpoint such as Helius for reliable demos.",
+    )
+
+
+class AttestationLookupRequest(BaseModel):
+    """Look up a Solana transaction and verify the expected Anukriti memo."""
+
+    signature: str = Field(..., min_length=20, description="Solana transaction signature.")
+    attestation: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Prepared attestation block. If provided, its solana.memo is verified.",
+    )
+    expected_memo: Optional[str] = Field(
+        default=None,
+        description="Expected memo string. Used when attestation is not provided.",
+    )
+    network: str = Field(default="devnet", description="Solana cluster or RPC URL label.")
+    rpc_url: Optional[str] = Field(
+        default=None,
+        description="Optional Solana RPC URL, e.g. a Helius devnet/mainnet endpoint.",
+    )
 
 
 class AnukritiLiteDemoRequest(BaseModel):
@@ -3617,6 +3643,7 @@ class AnukritiLiteDemoRequest(BaseModel):
         description="If true, submit the memo with the local Solana CLI.",
     )
     keypair_path: Optional[str] = Field(default=None)
+    rpc_url: Optional[str] = Field(default=None)
 
 
 TRIAL_WORKFLOWS: Dict[str, Dict[str, Any]] = {
@@ -3975,6 +4002,20 @@ def _anukriti_lite_submission_metadata() -> Dict[str, Any]:
                 "privacy_boundary": "Sample IDs, genotypes, phenotypes, and recommendations stay off-chain.",
                 "default_status": "prepared_not_submitted",
                 "optional_submit_path": "POST /attestations/submit with a configured devnet Solana CLI.",
+                "wallet_submit_path": "GET /lite/phantom for Phantom browser-wallet memo submission.",
+                "lookup_path": "POST /attestations/lookup verifies the memo through a Solana RPC provider such as Helius.",
+                "rpc_url": resolve_solana_rpc_url("devnet"),
+            },
+            "phantom": {
+                "role": "Recommended Frontier wallet UX for browser-side memo signing.",
+                "docs": "https://docs.phantom.com/phantom-connect",
+                "demo_path": "GET /lite/phantom",
+                "privacy_boundary": "The wallet signs only the compact memo proof; cohort rows stay off-chain.",
+            },
+            "helius": {
+                "role": "Recommended RPC/provider path for reliable proof submission and lookup.",
+                "docs": "https://www.helius.dev/",
+                "configuration": "Set SOLANA_RPC_URL to a Helius devnet/mainnet RPC endpoint.",
             },
             "qvac": {
                 "role": "Optional local LLM backend for concise PGx explanation sections.",
@@ -4232,7 +4273,10 @@ async def submit_attestation(req: AttestationSubmitRequest):
         raise HTTPException(status_code=400, detail="attestation.solana.memo missing")
     network = str(req.attestation.get("network") or "devnet")
     result = submit_memo_with_solana_cli(
-        memo, network=network, keypair_path=req.keypair_path
+        memo,
+        network=network,
+        keypair_path=req.keypair_path,
+        rpc_url=req.rpc_url,
     )
     if not result.get("submitted"):
         return {
@@ -4264,6 +4308,34 @@ async def submit_attestation(req: AttestationSubmitRequest):
     }
 
 
+@app.post("/attestations/lookup")
+async def lookup_attestation(req: AttestationLookupRequest):
+    """
+    Verify that a submitted Solana transaction contains an expected Anukriti memo.
+
+    Configure SOLANA_RPC_URL with Helius or another provider for reliable lookups.
+    """
+
+    expected_memo = (req.expected_memo or "").strip()
+    network = req.network
+    if req.attestation:
+        solana = req.attestation.get("solana") or {}
+        expected_memo = expected_memo or str(solana.get("memo") or "").strip()
+        network = str(req.attestation.get("network") or network)
+    if not expected_memo:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide expected_memo or attestation.solana.memo.",
+        )
+
+    return verify_solana_memo_proof(
+        req.signature.strip(),
+        expected_memo,
+        network=network,
+        rpc_url=req.rpc_url,
+    )
+
+
 @app.get("/lite")
 async def anukriti_lite_status():
     """Product metadata for the Colosseum-facing Anukriti Lite demo."""
@@ -4276,6 +4348,8 @@ async def anukriti_lite_status():
         "submission": submission,
         "proof_loop": submission["proof_loop"],
         "privacy_model": "Sample-level PGx rows stay off-chain; Solana sees only a schema label and hash.",
+        "phantom_wallet_demo": "/lite/phantom",
+        "rpc_url": resolve_solana_rpc_url("devnet"),
     }
 
 
@@ -4296,6 +4370,7 @@ async def anukriti_lite_demo(req: AnukritiLiteDemoRequest):
             attestation["solana"]["memo"],
             network=attestation["network"],
             keypair_path=req.keypair_path,
+            rpc_url=req.rpc_url,
         )
         if devnet_submission.get("submitted"):
             attestation = build_trial_export_attestation(
@@ -4323,6 +4398,173 @@ async def anukriti_lite_demo(req: AnukritiLiteDemoRequest):
         },
         "devnet_submission": devnet_submission,
     }
+
+
+@app.get("/lite/phantom", response_class=HTMLResponse)
+async def anukriti_lite_phantom_demo():
+    """
+    Browser-wallet proof page for Phantom users.
+
+    Judges can submit the hash-only memo from a Phantom wallet while all cohort
+    rows remain off-chain.
+    """
+
+    rpc_url = resolve_solana_rpc_url("devnet")
+    return f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anukriti Lite Phantom Proof</title>
+    <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+    <style>
+      :root {{
+        --ink: #17201b;
+        --muted: #607066;
+        --line: #dbe5dc;
+        --accent: #4b57ff;
+        --soft: #f4f8f5;
+      }}
+      * {{ box-sizing: border-box; }}
+      body {{
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: #fbfdfb;
+      }}
+      main {{ width: min(980px, calc(100vw - 32px)); margin: 42px auto; }}
+      h1 {{ font-size: 34px; margin: 0 0 10px; letter-spacing: 0; }}
+      p {{ color: var(--muted); line-height: 1.6; }}
+      .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px 0; }}
+      .panel {{ border: 1px solid var(--line); border-radius: 8px; padding: 18px; background: white; }}
+      button {{
+        min-height: 42px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 14px;
+        margin: 4px 8px 4px 0;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }}
+      button.secondary {{ background: #1f2a24; }}
+      code, pre {{
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }}
+      code {{ padding: 2px 5px; }}
+      pre {{ padding: 14px; max-height: 320px; overflow: auto; }}
+      .status {{ font-weight: 700; color: #245c37; }}
+      @media (max-width: 760px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Anukriti Lite Phantom Proof</h1>
+      <p>
+        Generate a deterministic PGx export, inspect the hash-only Solana memo,
+        then sign it with Phantom. Cohort rows stay off-chain.
+      </p>
+      <div class="grid">
+        <section class="panel">
+          <h2>Proof Actions</h2>
+          <button id="generate">Generate Proof</button>
+          <button id="connect" class="secondary">Connect Phantom</button>
+          <button id="submit">Sign Memo</button>
+          <p class="status" id="status">Ready.</p>
+          <p>RPC: <code id="rpc">{rpc_url}</code></p>
+        </section>
+        <section class="panel">
+          <h2>Solana Memo</h2>
+          <pre id="memo">No proof generated yet.</pre>
+        </section>
+      </div>
+      <section class="panel">
+        <h2>Result</h2>
+        <pre id="result">Waiting for action.</pre>
+      </section>
+    </main>
+    <script>
+      const MEMO_PROGRAM = new solanaWeb3.PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+      const RPC_URL = document.getElementById("rpc").textContent;
+      const connection = new solanaWeb3.Connection(RPC_URL, "confirmed");
+      let proof = null;
+      let wallet = null;
+
+      const statusEl = document.getElementById("status");
+      const memoEl = document.getElementById("memo");
+      const resultEl = document.getElementById("result");
+
+      function setStatus(text) {{ statusEl.textContent = text; }}
+      function show(data) {{ resultEl.textContent = typeof data === "string" ? data : JSON.stringify(data, null, 2); }}
+
+      document.getElementById("generate").onclick = async () => {{
+        setStatus("Generating proof...");
+        const resp = await fetch("/lite/demo", {{
+          method: "POST",
+          headers: {{ "Content-Type": "application/json" }},
+          body: JSON.stringify({{ workflow: "clopidogrel_cyp2c19", submit_to_devnet: false }})
+        }});
+        proof = await resp.json();
+        memoEl.textContent = proof.export.attestation.solana.memo;
+        show(proof);
+        setStatus("Proof generated.");
+      }};
+
+      document.getElementById("connect").onclick = async () => {{
+        const provider = window.phantom?.solana || window.solana;
+        if (!provider?.isPhantom) {{
+          setStatus("Phantom not found. Install Phantom or use prepared proof mode.");
+          return;
+        }}
+        const connected = await provider.connect();
+        wallet = provider;
+        setStatus(`Connected: ${{connected.publicKey.toString()}}`);
+      }};
+
+      document.getElementById("submit").onclick = async () => {{
+        if (!proof) {{
+          setStatus("Generate a proof first.");
+          return;
+        }}
+        if (!wallet) {{
+          await document.getElementById("connect").onclick();
+        }}
+        if (!wallet?.publicKey) {{
+          setStatus("Connect Phantom first.");
+          return;
+        }}
+        const memo = proof.export.attestation.solana.memo;
+        const tx = new solanaWeb3.Transaction().add(
+          new solanaWeb3.TransactionInstruction({{
+            keys: [],
+            programId: MEMO_PROGRAM,
+            data: new TextEncoder().encode(memo)
+          }})
+        );
+        tx.feePayer = wallet.publicKey;
+        tx.recentBlockhash = (await connection.getLatestBlockhash("confirmed")).blockhash;
+        setStatus("Requesting Phantom signature...");
+        const signed = await wallet.signAndSendTransaction(tx);
+        setStatus(`Submitted: ${{signed.signature}}`);
+        const lookup = await fetch("/attestations/lookup", {{
+          method: "POST",
+          headers: {{ "Content-Type": "application/json" }},
+          body: JSON.stringify({{
+            signature: signed.signature,
+            attestation: proof.export.attestation,
+            rpc_url: RPC_URL
+          }})
+        }});
+        show(await lookup.json());
+      }};
+    </script>
+  </body>
+</html>"""
 
 
 # ---------------------------------------------------------------------------

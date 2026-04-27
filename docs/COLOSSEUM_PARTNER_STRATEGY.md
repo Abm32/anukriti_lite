@@ -32,7 +32,7 @@ Why it fits:
 
 Near-term integration:
 
-- Add a lightweight web demo route or React page that connects Phantom.
+- Added `GET /lite/phantom`, a lightweight browser-wallet demo page.
 - Let the connected wallet submit the prepared memo transaction.
 - Keep the current Streamlit/CLI route as the fallback.
 
@@ -59,10 +59,10 @@ Why it fits:
 
 Near-term integration:
 
-- Add `SOLANA_RPC_URL` to `.env`.
-- Use Helius RPC when submitting or verifying memo signatures.
-- Add a proof lookup endpoint that fetches transaction details and checks the
-  memo content.
+- Added `SOLANA_RPC_URL` to `.env.example`.
+- `src/solana_attestation.py` now resolves custom RPC provider URLs.
+- `POST /attestations/lookup` fetches transaction details and checks the memo
+  content.
 
 Submission language:
 
@@ -269,12 +269,10 @@ Roadmap:
 
 ## What To Build Next
 
-1. Add `SOLANA_RPC_URL` support and use it in Solana submission helpers.
-2. Add a proof lookup endpoint that verifies memo content from a transaction
-   signature.
-3. Build a small Phantom-connected web page for wallet-side memo submission.
-4. Keep Streamlit prepared-proof mode as the fallback demo.
-5. Add Arcium and World ID to the roadmap section, not the critical path.
+1. Put a real Helius endpoint in `SOLANA_RPC_URL`.
+2. Test `GET /lite/phantom` in a browser with Phantom installed.
+3. Keep Streamlit prepared-proof mode as the fallback demo.
+4. Add Arcium and World ID to the roadmap section, not the critical path.
 
 ## Do Not Overbuild For Submission
 

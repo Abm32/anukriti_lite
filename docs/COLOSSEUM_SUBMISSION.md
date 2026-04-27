@@ -57,6 +57,10 @@ Implemented surfaces:
 - `POST /attestations/verify` verifies payloads against attestations.
 - `POST /attestations/submit` can submit the memo through a configured Solana
   devnet CLI wallet.
+- `POST /attestations/lookup` checks an on-chain transaction through a Solana RPC
+  provider and verifies that it contains the expected Anukriti memo.
+- `GET /lite/phantom` provides a Phantom browser-wallet path for signing the
+  memo proof.
 - Streamlit includes a `Solana Proofs` page for judge demos.
 
 ## QVAC Integration
@@ -94,6 +98,11 @@ Recommended sponsor/partner stack for Anukriti Lite:
   security.
 
 The detailed partner map is in `docs/COLOSSEUM_PARTNER_STRATEGY.md`.
+
+Implemented partner hooks:
+
+- Phantom-ready browser demo: `GET /lite/phantom`
+- Provider/RPC lookup: set `SOLANA_RPC_URL`, then call `POST /attestations/lookup`
 
 ## Judge Demo Script
 
