@@ -3951,6 +3951,58 @@ def _tamper_lite_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     return tampered
 
 
+def _anukriti_lite_submission_metadata() -> Dict[str, Any]:
+    """Judge-facing metadata that keeps the Colosseum, Solana, and QVAC story together."""
+
+    return {
+        "one_liner": (
+            "Anukriti Lite turns deterministic pharmacogenomics trial exports into "
+            "private, verifiable Solana proof artifacts, with QVAC available for "
+            "local explanation text."
+        ),
+        "tracks": {
+            "colosseum": {
+                "wedge": "PGx trial export provenance, not generic healthcare records.",
+                "judge_demo": "POST /lite/demo or Streamlit -> Solana Proofs.",
+                "differentiator": (
+                    "The artifact being proved is a deterministic cohort-stratification "
+                    "export that sponsors can re-verify after generation."
+                ),
+            },
+            "solana": {
+                "role": "Tamper-evident proof reference for off-chain PGx exports.",
+                "on_chain_data": "Only anukriti:<schema_version>:<payload_hash> memo text.",
+                "privacy_boundary": "Sample IDs, genotypes, phenotypes, and recommendations stay off-chain.",
+                "default_status": "prepared_not_submitted",
+                "optional_submit_path": "POST /attestations/submit with a configured devnet Solana CLI.",
+            },
+            "qvac": {
+                "role": "Optional local LLM backend for concise PGx explanation sections.",
+                "enabled": config.QVAC_ENABLED,
+                "model": config.QVAC_MODEL_LABEL,
+                "bridge": config.QVAC_SCRIPT_PATH,
+                "privacy_boundary": (
+                    "QVAC receives de-identified context and deterministic PGx results; "
+                    "it does not make the clinical call or publish proofs."
+                ),
+                "setup": "cd qvac && npm install && npm run check",
+            },
+        },
+        "proof_loop": [
+            "deterministic PGx cohort export",
+            "canonical JSON payload",
+            "SHA-256 payload hash",
+            "Solana memo proof reference",
+            "local verification",
+            "tamper rejection",
+        ],
+        "safety_positioning": (
+            "Research prototype only. Deterministic PGx logic is the source of truth; "
+            "AI explains outputs and Solana proves artifact integrity."
+        ),
+    }
+
+
 @app.post("/analyze/batch", response_model=List[AnalyzeResponse])
 async def analyze_drug_batch(batch_request: BatchAnalyzeRequest):
     """
@@ -4216,17 +4268,13 @@ async def submit_attestation(req: AttestationSubmitRequest):
 async def anukriti_lite_status():
     """Product metadata for the Colosseum-facing Anukriti Lite demo."""
 
+    submission = _anukriti_lite_submission_metadata()
     return {
         "name": "Anukriti Lite",
         "tagline": "Verifiable trial-export provenance for PGx cohorts on Solana.",
         "status": "ready",
-        "proof_loop": [
-            "deterministic PGx cohort export",
-            "canonical SHA-256 hash",
-            "Solana memo proof reference",
-            "local verification",
-            "tamper detection",
-        ],
+        "submission": submission,
+        "proof_loop": submission["proof_loop"],
         "privacy_model": "Sample-level PGx rows stay off-chain; Solana sees only a schema label and hash.",
     }
 
@@ -4238,23 +4286,23 @@ async def anukriti_lite_demo(req: AnukritiLiteDemoRequest):
     payload = _anukriti_lite_demo_payload(req.workflow)
     attestation = build_trial_export_attestation(payload)
 
-    submission = {
+    devnet_submission = {
         "submitted": False,
         "status": "not_requested",
         "message": "Set submit_to_devnet=true to use the local Solana CLI.",
     }
     if req.submit_to_devnet:
-        submission = submit_memo_with_solana_cli(
+        devnet_submission = submit_memo_with_solana_cli(
             attestation["solana"]["memo"],
             network=attestation["network"],
             keypair_path=req.keypair_path,
         )
-        if submission.get("submitted"):
+        if devnet_submission.get("submitted"):
             attestation = build_trial_export_attestation(
                 payload,
                 network=attestation["network"],
                 proof_status="submitted",
-                signature=str(submission.get("signature") or ""),
+                signature=str(devnet_submission.get("signature") or ""),
             )
 
     export_with_attestation = dict(payload)
@@ -4266,13 +4314,14 @@ async def anukriti_lite_demo(req: AnukritiLiteDemoRequest):
     return {
         "project": "Anukriti Lite",
         "submission_positioning": "A focused Solana proof layer for deterministic pharmacogenomics trial exports.",
+        "submission": _anukriti_lite_submission_metadata(),
         "export": export_with_attestation,
         "verification": verification,
         "tamper_demo": {
             "payload": tampered_payload,
             "verification": tamper_check,
         },
-        "submission": submission,
+        "devnet_submission": devnet_submission,
     }
 
 

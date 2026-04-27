@@ -2594,6 +2594,26 @@ elif nav == "Solana Proofs":
         "Privacy model: sample-level PGx rows stay off-chain. The Solana memo contains only "
         "the Anukriti schema label and export hash."
     )
+    st.markdown("#### Submission wedge")
+    wedge_col, solana_col, qvac_col = st.columns(3)
+    with wedge_col:
+        st.markdown(
+            "**Colosseum**\n\n"
+            "Deterministic PGx trial exports become reproducible proof artifacts, "
+            "not generic healthcare records."
+        )
+    with solana_col:
+        st.markdown(
+            "**Solana**\n\n"
+            "The chain receives only `anukriti:<schema>:<hash>` memo text; cohort "
+            "rows stay off-chain."
+        )
+    with qvac_col:
+        st.markdown(
+            "**QVAC**\n\n"
+            "Local explanations can describe deterministic PGx results without "
+            "becoming the clinical decision engine."
+        )
 
     proof_col, action_col = st.columns([2, 1])
     with proof_col:

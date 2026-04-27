@@ -1,10 +1,14 @@
 # Anukriti Lite
 
-Colosseum submission for privacy-preserving pharmacogenomics simulation.
+Colosseum submission for privacy-preserving pharmacogenomics trial provenance.
 
 Anukriti Lite combines a deterministic pharmacogenomics engine with AI-generated
 explanations, Solana-ready hash attestations, and an optional QVAC local LLM
 bridge. It is a research prototype and is not intended for clinical use.
+
+**Submission thesis:** deterministic PGx trial exports stay private and
+off-chain; Solana anchors a compact proof reference; QVAC explains the
+deterministic result locally without becoming the decision-maker.
 
 ## What It Does
 
@@ -24,6 +28,8 @@ bridge. It is a research prototype and is not intended for clinical use.
 - `src/` - PGx callers, retrieval, LLM bridges, Solana attestation code.
 - `data/pgx/` - compact CPIC/PharmVar-style local PGx data.
 - `qvac/` - QVAC JS SDK bridge.
+- `docs/COLOSSEUM_SUBMISSION.md` - copy-ready Colosseum/Solana/QVAC submission
+  brief.
 - `docs/ANUKRITI_LITE_COLOSSEUM.md` - judge-facing flow.
 - `docs/SOLANA_ATTESTATION.md` - attestation design.
 - `tests/` - focused unit tests for PGx, QVAC, and attestations.
@@ -60,6 +66,10 @@ The default proof status is `prepared_not_submitted`: the backend prepares a
 memo-safe Solana payload but does not publish patient data. Optional devnet
 submission can be enabled from the Solana Proofs page when the host has a funded
 devnet wallet and Solana CLI configured.
+
+For the strongest judge demo, call `GET /lite` for the positioning metadata,
+then `POST /lite/demo` to show export -> hash -> Solana memo -> verification ->
+tamper rejection in one response.
 
 ## QVAC Partner Track
 

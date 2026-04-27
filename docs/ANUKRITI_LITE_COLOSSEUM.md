@@ -3,7 +3,8 @@
 ## Positioning
 
 Anukriti Lite is the Colosseum-facing version of Anukriti: a focused Solana proof
-layer for deterministic pharmacogenomics trial exports.
+layer for deterministic pharmacogenomics trial exports, with QVAC as the local
+explanation layer.
 
 The product claim is deliberately narrow:
 
@@ -11,8 +12,16 @@ The product claim is deliberately narrow:
 - Anukriti canonicalizes the export payload and hashes it with SHA-256.
 - Solana stores only a compact memo proof reference.
 - Reviewers can verify that a trial export was not changed after generation.
+- QVAC can explain the deterministic result locally from de-identified context.
 - Normal Simulation Lab runs also return a `simulation_result_attestation` proof,
   so hashing is now part of the real AI-engine pipeline, not only a standalone demo.
+
+The submission thesis is:
+
+```text
+deterministic PGx export -> private off-chain artifact -> Solana proof reference
+-> QVAC local explanation -> reproducible verification
+```
 
 ## Demo Flow
 
@@ -55,6 +64,9 @@ status, and downloadable proof JSON.
 hackathon judge can understand the complete proof loop without depending on local
 VCF availability.
 
+`GET /lite` and `POST /lite/demo` also include a `submission` object that spells
+out the Colosseum wedge, the Solana privacy boundary, and the QVAC role.
+
 ## QVAC Partner Track
 
 QVAC is wired as an optional local LLM explanation backend without replacing the
@@ -72,6 +84,10 @@ Then either select `QVAC (Local)` in the Streamlit sidebar, or send
 The Python pipeline still performs PGx interpretation, retrieval, structured
 output, and attestation. The QVAC bridge only receives de-identified clinical
 context and returns explanatory text using the local `@qvac/sdk` model.
+
+This is important for judging: QVAC is not competing with the deterministic
+engine or the Solana proof. It makes the artifact more understandable while the
+hash/memo layer makes the artifact auditable.
 
 ## Local Run
 
