@@ -1,0 +1,11 @@
+allele	rsid	alt	function
+*2	rs16947	A	Normal function
+*3	rs35742686	DEL	No function
+*4	rs3892097	A	No function
+*5	CYP2D6_DEL	DEL	No function (gene deletion)
+*6	rs5030655	DEL	No function
+*9	rs5030656	DEL	Reduced function
+*10	rs1065852	T	Reduced function
+*17	rs28371706	T	Reduced function
+*41	rs28371725	T	Reduced function
+*1xN	CYP2D6_DUP	DUP	Increased function (duplication)

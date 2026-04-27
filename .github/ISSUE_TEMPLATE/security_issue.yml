@@ -1,0 +1,201 @@
+name: 🔒 Security Issue
+description: Report a security vulnerability or concern
+title: "[Security]: "
+labels: ["security", "priority: critical", "status: needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **IMPORTANT SECURITY NOTICE** ⚠️
+
+        If you believe you have found a security vulnerability, please DO NOT create a public issue.
+        Instead, please report it privately by:
+        1. Emailing security@synthatrial.org (if available)
+        2. Using GitHub's private vulnerability reporting feature
+        3. Contacting the maintainers directly
+
+        Only use this template for general security concerns or questions that are not sensitive.
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Security Issue Confirmation
+      description: Please confirm this is appropriate for a public issue
+      options:
+        - label: This is NOT a sensitive security vulnerability that could be exploited
+          required: true
+        - label: This is a general security concern, question, or improvement suggestion
+          required: true
+        - label: I understand that sensitive vulnerabilities should be reported privately
+          required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Security Issue Type
+      description: What type of security issue is this?
+      options:
+        - Security Enhancement Request
+        - Security Configuration Question
+        - Security Best Practices Discussion
+        - Security Documentation Issue
+        - Security Testing Improvement
+        - General Security Concern
+        - Other (Non-sensitive)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Security Issue Description
+      description: Describe the security concern or enhancement request.
+      placeholder: |
+        Provide a clear description of:
+        - What security aspect you're concerned about
+        - Why this is a security consideration
+        - What improvements you're suggesting
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      description: Which component does this security issue relate to?
+      options:
+        - Docker Configuration
+        - CI/CD Pipeline
+        - Container Images
+        - SSL/TLS Configuration
+        - Authentication/Authorization
+        - Data Handling
+        - Network Security
+        - Dependency Management
+        - Code Security
+        - Infrastructure
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Current Security State
+      description: Describe the current security implementation or configuration.
+      placeholder: |
+        Describe:
+        - How security is currently handled in this area
+        - What security measures are already in place
+        - What gaps or improvements you've identified
+
+  - type: textarea
+    id: proposed-improvement
+    attributes:
+      label: Proposed Security Improvement
+      description: What security improvements do you suggest?
+      placeholder: |
+        Suggest improvements such as:
+        - Enhanced security configurations
+        - Additional security checks
+        - Better security documentation
+        - Improved security testing
+        - Security best practices implementation
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Security Priority
+      description: How urgent is this security concern?
+      options:
+        - Low - General improvement or question
+        - Medium - Should be addressed in next release
+        - High - Important security enhancement
+        - Critical - Urgent security concern (but not exploitable)
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Security Impact
+      description: What is the potential security impact if this issue is not addressed?
+      placeholder: |
+        Describe the potential impact:
+        - What could happen if this isn't addressed?
+        - Who or what would be affected?
+        - What are the risk factors?
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Security References
+      description: Provide any relevant security references or standards.
+      placeholder: |
+        Include references to:
+        - Security standards (OWASP, NIST, etc.)
+        - Best practices documentation
+        - Security guidelines
+        - Related security advisories
+        - Research papers or articles
+
+  - type: checkboxes
+    id: security-areas
+    attributes:
+      label: Security Areas of Concern
+      description: Check all security areas that apply to this issue
+      options:
+        - label: Container Security
+        - label: Network Security
+        - label: Data Protection
+        - label: Access Control
+        - label: Cryptography/Encryption
+        - label: Input Validation
+        - label: Dependency Security
+        - label: Infrastructure Security
+        - label: CI/CD Security
+        - label: Monitoring/Logging
+        - label: Compliance
+        - label: Security Testing
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Security Testing
+      description: How can this security improvement be tested or validated?
+      placeholder: |
+        Describe testing approaches:
+        - Security tests that should be added
+        - Validation methods
+        - Security scanning tools to use
+        - Compliance checks needed
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Security Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have confirmed this is NOT a sensitive vulnerability
+          required: true
+        - label: I have searched existing issues for similar security concerns
+          required: true
+        - label: I have provided clear security improvement suggestions
+          required: true
+        - label: I understand the difference between public and private security reporting
+          required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Security Context
+      description: Any additional security-related information or context.
+      placeholder: |
+        Additional information:
+        - Security tools or scanners used
+        - Compliance requirements
+        - Industry standards to consider
+        - Related security incidents or advisories

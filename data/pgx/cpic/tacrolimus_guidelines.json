@@ -1,0 +1,14 @@
+{
+  "_source": "CPIC Guideline for tacrolimus and CYP3A5 (PMID: 25801146, updated 2021)",
+  "_cpic_level": "A",
+  "tacrolimus": {
+    "Rapid Metabolizer": "Increase starting dose 1.5 to 2 times recommended starting dose. Total starting dose should not exceed 0.3 mg/kg/day. Use therapeutic drug monitoring (TDM) to guide dose adjustments.",
+    "Intermediate Metabolizer": "Increase starting dose 1.5 to 2 times recommended starting dose. Use TDM to guide dose adjustments. Patients may require higher doses than *3/*3 patients to achieve target trough concentrations.",
+    "Poor Metabolizer": "Initiate therapy with standard recommended dose. Use TDM to guide dose adjustments. CYP3A5 poor metabolizers (most Europeans and Asians) require standard dosing."
+  },
+  "midazolam": {
+    "Rapid Metabolizer": "Reduced drug exposure expected. Monitor for reduced sedative effect. Higher doses may be required.",
+    "Intermediate Metabolizer": "Moderately reduced drug exposure. Standard dosing with monitoring.",
+    "Poor Metabolizer": "Standard drug exposure. Use recommended starting dose."
+  }
+}

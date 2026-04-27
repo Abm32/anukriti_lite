@@ -1,0 +1,52 @@
+services:
+  backend:
+    build: .
+    container_name: anukriti-backend
+    command: >
+      conda run -n anukriti uvicorn api:app
+      --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - anukriti-network
+
+  frontend:
+    build: .
+    container_name: anukriti-frontend
+    command: >
+      conda run -n anukriti streamlit run app.py
+      --server.port=8501 --server.address=0.0.0.0
+    env_file:
+      - .env
+    environment:
+      - API_URL=http://backend:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - anukriti-network
+
+networks:
+  anukriti-network:
+    driver: bridge

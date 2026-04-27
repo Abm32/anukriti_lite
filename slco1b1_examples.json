@@ -1,0 +1,20 @@
+[
+  {
+    "variants": {
+      "rs4149056": ["T", "C", "0/1"]
+    },
+    "expected": "Decreased function (moderate myopathy risk)"
+  },
+  {
+    "variants": {
+      "rs4149056": ["T", "C", "1/1"]
+    },
+    "expected": "Poor function (high myopathy risk)"
+  },
+  {
+    "variants": {
+      "rs4149056": ["T", "C", "0/0"]
+    },
+    "expected": "Normal function (low myopathy risk)"
+  }
+]

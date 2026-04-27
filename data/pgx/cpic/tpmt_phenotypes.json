@@ -1,0 +1,21 @@
+{
+  "_source": "CPIC Guideline for Thiopurines and TPMT/NUDT15 (2018 update)",
+  "_version": "2024-01",
+  "*1/*1": "Normal Metabolizer",
+  "*1/*2": "Intermediate Metabolizer",
+  "*1/*3A": "Intermediate Metabolizer",
+  "*1/*3B": "Intermediate Metabolizer",
+  "*1/*3C": "Intermediate Metabolizer",
+  "*1/*4": "Intermediate Metabolizer",
+  "*2/*2": "Poor Metabolizer",
+  "*2/*3A": "Poor Metabolizer",
+  "*2/*3B": "Poor Metabolizer",
+  "*2/*3C": "Poor Metabolizer",
+  "*3A/*3A": "Poor Metabolizer",
+  "*3A/*3B": "Poor Metabolizer",
+  "*3A/*3C": "Poor Metabolizer",
+  "*3B/*3B": "Poor Metabolizer",
+  "*3B/*3C": "Poor Metabolizer",
+  "*3C/*3C": "Poor Metabolizer",
+  "*4/*4": "Poor Metabolizer"
+}

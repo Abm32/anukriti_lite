@@ -1,0 +1,26 @@
+[
+  {
+    "variants": {
+      "rs1799853": "T",
+      "rs9923231": "A"
+    },
+    "expected": "Moderate dose reduction recommended",
+    "description": "CYP2C9 *1/*2 + VKORC1 GA"
+  },
+  {
+    "variants": {
+      "rs1799853": "T",
+      "rs1057910": "C",
+      "rs9923231": "G"
+    },
+    "expected": "Moderate dose reduction recommended",
+    "description": "CYP2C9 *2/*3 + VKORC1 GG (moderate reduction)"
+  },
+  {
+    "variants": {
+      "rs9923231": "G"
+    },
+    "expected": "Normal dose requirement",
+    "description": "CYP2C9 *1/*1 + VKORC1 GG"
+  }
+]

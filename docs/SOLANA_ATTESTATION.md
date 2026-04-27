@@ -1,0 +1,67 @@
+# Anukriti Solana Attestations
+
+Anukriti keeps pharmacogenomics data off-chain and anchors only a deterministic
+proof reference on Solana.
+
+## Simulation Flow
+
+`POST /analyze` and `POST /analyze/novel-drug` now return an `attestation`
+block directly in the simulation result. The Streamlit **Simulation Lab** shows
+this under the `Solana Proof` result tab.
+
+1. Run a normal drug-patient simulation.
+2. Build the public simulation artifact from the result, risk level,
+   structured PGx output, audit metadata, and EHR bundle.
+3. Canonicalize the artifact with sorted JSON keys, excluding any existing
+   `attestation` field.
+4. Hash the canonical payload with SHA-256.
+5. Build a Solana devnet memo:
+
+   ```text
+   anukriti:anukriti.simulation_result_attestation.v1:<payload_hash>
+   ```
+
+This proves the exact simulation output without placing patient profile text,
+genetics, PGx results, or AI explanation on-chain.
+
+## Trial Export Flow
+
+1. Generate a deterministic trial export through `POST /trial/export`.
+2. Canonicalize the export payload with sorted JSON keys, excluding any existing
+   `attestation` field.
+3. Hash the canonical payload with SHA-256.
+4. Build a Solana devnet memo:
+
+   ```text
+   anukriti:anukriti.trial_export_attestation.v1:<payload_hash>
+   ```
+
+5. Submit that memo in a devnet transaction and store the resulting signature beside the export artifact.
+6. Recompute the export hash later to verify the artifact was not changed.
+
+## Privacy Model
+
+The full trial export stays off-chain. The Solana memo contains only a hash and schema label, not sample IDs, variants, phenotypes, recommendations, or cohort rows.
+
+## API Output
+
+`POST /trial/export` now returns an `attestation` block:
+
+```json
+{
+  "schema_version": "anukriti.trial_export_attestation.v1",
+  "network": "devnet",
+  "hash_algorithm": "sha256",
+  "payload_hash": "...",
+  "solana": {
+    "cluster": "devnet",
+    "memo_program_id": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+    "memo": "anukriti:anukriti.trial_export_attestation.v1:...",
+    "devnet_proof_status": "prepared_not_submitted"
+  }
+}
+```
+
+## Verification
+
+Use `src.solana_attestation.verify_trial_export_attestation(payload, attestation)` to verify that a local export still matches its proof artifact.

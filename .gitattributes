@@ -1,0 +1,2 @@
+# Large LoRA weights — use Git LFS when copying adapters into artifacts/lora/ (see training/lm_finetune/README.md)
+artifacts/**/*.safetensors filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,18 @@
+{
+  "_source": "CPIC/PharmGKB GSTM1/GSTT1 null genotype phenotype (PMID: 25916897)",
+  "_cpic_level": "B",
+  "_genes": ["GSTM1", "GSTT1"],
+  "_mechanism": "GSTM1 and GSTT1 exhibit copy number deletion polymorphisms. 'Null' genotype (homozygous deletion) results in absent enzyme activity. Detected by absence of PCR product or homozygous DEL in VCF/array data.",
+  "_gstm1_equity": "GSTM1 null frequency: AFR ~25%, EUR ~50%, EAS ~55%, SAS ~35%.",
+  "_gstt1_equity": "GSTT1 null frequency: AFR ~20%, EUR ~15%, EAS ~55%, SAS ~25%.",
+  "GSTM1": {
+    "Present/Present": "Normal Function",
+    "Present/Null": "Intermediate Function",
+    "Null/Null": "No Function (Null Genotype)"
+  },
+  "GSTT1": {
+    "Present/Present": "Normal Function",
+    "Present/Null": "Intermediate Function",
+    "Null/Null": "No Function (Null Genotype)"
+  }
+}

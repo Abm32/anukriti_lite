@@ -1,0 +1,200 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement for SynthaTrial
+title: "[Feature]: "
+labels: ["type: feature", "status: needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand and evaluate your request.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A brief, clear summary of the feature you'd like to see added.
+      placeholder: Summarize the feature in 1-2 sentences...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What use case does it address?
+      placeholder: |
+        Describe the problem or use case this feature would address:
+        - What are you trying to accomplish?
+        - What current limitations are you facing?
+        - How would this feature improve the user experience?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution in detail.
+      placeholder: |
+        Describe your proposed solution:
+        - How should this feature work?
+        - What should the user interface look like?
+        - What are the key components or changes needed?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component Area
+      description: Which component would this feature primarily affect?
+      options:
+        - Web Interface (Streamlit)
+        - Core Algorithm/AI Engine
+        - VCF Processing
+        - Docker/Containerization
+        - CI/CD Pipeline
+        - Security
+        - Performance/Monitoring
+        - Documentation
+        - Testing Framework
+        - Data Processing
+        - API/Integration
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-type
+    attributes:
+      label: Target User Type
+      description: Who would primarily benefit from this feature?
+      options:
+        - Researchers
+        - Developers
+        - DevOps Engineers
+        - End Users
+        - System Administrators
+        - All Users
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: |
+        Describe any alternative solutions you've considered:
+        - What workarounds are currently available?
+        - Why are these alternatives insufficient?
+        - Are there similar features in other tools?
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples and Use Cases
+      description: Provide specific examples of how this feature would be used.
+      placeholder: |
+        Provide concrete examples:
+        - Step-by-step usage scenarios
+        - Sample inputs and expected outputs
+        - Real-world use cases
+        - Screenshots or mockups (if applicable)
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would improve workflow
+        - High - Important for productivity
+        - Critical - Blocking current work
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      description: How complex do you think this feature would be to implement?
+      options:
+        - Low - Minor changes or additions
+        - Medium - Moderate development effort
+        - High - Significant changes required
+        - Very High - Major architectural changes
+        - Unknown - Not sure about complexity
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: implementation
+    attributes:
+      label: Implementation Considerations
+      description: Check all that apply to this feature request
+      options:
+        - label: This feature would require changes to the Docker configuration
+        - label: This feature would require updates to the CI/CD pipeline
+        - label: This feature would require new dependencies
+        - label: This feature would require database schema changes
+        - label: This feature would require API changes
+        - label: This feature would require security considerations
+        - label: This feature would require performance optimization
+        - label: This feature would require extensive testing
+        - label: This feature would require documentation updates
+
+  - type: textarea
+    id: technical-details
+    attributes:
+      label: Technical Details
+      description: Any technical specifications or implementation details you'd like to share.
+      placeholder: |
+        Include any technical details:
+        - Specific technologies or libraries to use
+        - Performance requirements
+        - Security considerations
+        - Integration requirements
+        - Data format specifications
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Are you willing to contribute to this feature?
+      options:
+        - label: I would be willing to implement this feature myself
+        - label: I would be willing to help with testing
+        - label: I would be willing to help with documentation
+        - label: I would be willing to provide feedback during development
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided a clear problem statement and proposed solution
+          required: true
+        - label: I have considered the impact on existing functionality
+          required: true
+        - label: I have provided specific examples and use cases
+          required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request.
+      placeholder: |
+        Any additional information:
+        - Links to relevant documentation
+        - Screenshots or mockups
+        - References to similar features in other tools
+        - Research papers or articles supporting this feature

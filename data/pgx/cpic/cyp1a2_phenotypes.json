@@ -1,0 +1,18 @@
+{
+  "_source": "PharmVar/CPIC CYP1A2 phenotype assignments",
+  "_cpic_level": "B",
+  "_genes": ["CYP1A2"],
+  "_note": "CYP1A2 activity is strongly influenced by smoking and inducers (caffeine, omeprazole). Phenotype shown is for non-smoking baseline.",
+  "*1/*1": "Normal Metabolizer",
+  "*1/*1C": "Intermediate Metabolizer",
+  "*1/*1F": "Normal Metabolizer (Rapid if induced)",
+  "*1/*1K": "Intermediate Metabolizer",
+  "*1/*3": "Intermediate Metabolizer",
+  "*1/*4": "Intermediate Metabolizer",
+  "*1/*6": "Intermediate Metabolizer",
+  "*1/*7": "Intermediate Metabolizer",
+  "*1C/*1C": "Poor Metabolizer",
+  "*3/*3": "Poor Metabolizer",
+  "*4/*4": "Poor Metabolizer",
+  "*1F/*1F": "Rapid Metabolizer (when induced)"
+}

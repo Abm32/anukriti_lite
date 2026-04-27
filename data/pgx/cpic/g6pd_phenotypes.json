@@ -1,0 +1,18 @@
+{
+  "_source": "CPIC G6PD guideline (PMID 24787449), WHO G6PD classification",
+  "_note": "G6PD is X-linked; males are hemizygous (one allele). Females can be heterozygous (Variable) or homozygous.",
+  "B/B": "Normal",
+  "B/A-": "Variable (Heterozygous)",
+  "A-/A-": "Deficient (Class III)",
+  "B/Mediterranean": "Variable (Heterozygous)",
+  "Mediterranean/Mediterranean": "Severely Deficient (Class II)",
+  "B/Canton": "Variable (Heterozygous)",
+  "Canton/Canton": "Severely Deficient (Class II)",
+  "B/Chatham": "Variable (Heterozygous)",
+  "Chatham/Chatham": "Deficient (Class III)",
+  "B/Kaiping": "Variable (Heterozygous)",
+  "Kaiping/Kaiping": "Severely Deficient (Class II)",
+  "A-/Mediterranean": "Deficient (Class III)",
+  "A-/Canton": "Deficient (Class III)",
+  "Mediterranean/Canton": "Severely Deficient (Class II)"
+}

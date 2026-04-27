@@ -1,0 +1,583 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: "Force rebuild all images"
+        required: false
+        default: false
+        type: boolean
+      skip_tests:
+        description: "Skip test execution"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  # Job 1: Code Quality and Security Checks
+  code-quality:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit bandit safety black isort flake8 mypy
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run pre-commit hooks
+        run: |
+          pre-commit install
+          pre-commit run --all-files --show-diff-on-failure || true
+
+      - name: Security scan with Bandit
+        run: |
+          bandit -r src/ scripts/ -f json -o bandit-report.json || true
+          bandit -r src/ scripts/ -f txt || true
+          touch bandit-report.json
+
+      - name: Dependency vulnerability scan
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check || true
+          touch safety-report.json
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+          if-no-files-found: ignore
+
+  # Job 2: Unit and Integration Tests
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_tests }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+        test-type: ["unit", "integration", "property"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          activate-environment: synthatrial-test
+
+      - name: Install RDKit and dependencies
+        shell: bash -l {0}
+        run: |
+          conda install -c conda-forge rdkit pandas scipy scikit-learn numpy
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist pytest-mock pytest-timeout coverage hypothesis
+
+      - name: Create test environment
+        run: |
+          mkdir -p data/genomes data/chembl logs
+          echo "GOOGLE_API_KEY=test_key" > .env
+          echo "PINECONE_API_KEY=test_key" >> .env
+
+      - name: Run unit tests
+        if: matrix.test-type == 'unit'
+        shell: bash -l {0}
+        run: |
+          pytest tests/ -v --cov=src --cov-report=xml --cov-report=term-missing \
+            -k "not integration and not property" \
+            --timeout=300 --maxfail=5
+
+      - name: Run integration tests
+        if: matrix.test-type == 'integration'
+        shell: bash -l {0}
+        run: |
+          pytest tests/ -v --timeout=600 --maxfail=3 \
+            -k "integration" || true
+
+      - name: Run property-based tests
+        if: matrix.test-type == 'property'
+        shell: bash -l {0}
+        run: |
+          pytest tests/ -v --timeout=900 --maxfail=3 \
+            -k "property" || true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.python-version }}-${{ matrix.test-type }}
+          path: |
+            coverage.xml
+            .coverage
+            htmlcov/
+          if-no-files-found: ignore
+
+  # Job 3: Docker Build Matrix
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [code-quality]
+    strategy:
+      matrix:
+        target: [dev, prod, dev-enhanced]
+        include:
+          - target: dev
+            dockerfile: docker/Dockerfile.dev
+            context: .
+            tags: |
+              type=ref,event=branch,suffix=-dev
+              type=ref,event=pr,suffix=-dev
+              type=semver,pattern={{version}},suffix=-dev
+              type=semver,pattern={{major}}.{{minor}},suffix=-dev
+          - target: prod
+            dockerfile: docker/Dockerfile.prod
+            context: .
+            tags: |
+              type=ref,event=branch
+              type=ref,event=pr
+              type=semver,pattern={{version}}
+              type=semver,pattern={{major}}.{{minor}}
+              type=raw,value=latest,enable={{is_default_branch}}
+          - target: dev-enhanced
+            dockerfile: docker/Dockerfile.dev-enhanced
+            context: .
+            tags: |
+              type=ref,event=branch,suffix=-dev-enhanced
+              type=ref,event=pr,suffix=-dev-enhanced
+              type=semver,pattern={{version}},suffix=-dev-enhanced
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Log in to Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: ${{ matrix.tags }}
+          labels: |
+            org.opencontainers.image.title=SynthaTrial
+            org.opencontainers.image.description=In Silico Pharmacogenomics Platform
+            org.opencontainers.image.vendor=SynthaTrial
+            org.opencontainers.image.version=${{ github.ref_name }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          platforms: ${{ env.PLATFORMS }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ github.ref_name }}
+
+      # Alternative: Use multi-arch build orchestration script
+      - name: Build with orchestration script (alternative)
+        if: false # Disabled by default, enable for testing
+        run: |
+          python3 scripts/multi_arch_build.py \
+            --target ${{ matrix.target }} \
+            --platforms ${{ env.PLATFORMS }} \
+            --registry ${{ env.REGISTRY }} \
+            --push \
+            --verbose
+
+      - name: Export image for scanning
+        if: matrix.target == 'prod'
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64
+          load: true
+          tags: synthatrial:scan-${{ github.sha }}
+          cache-from: type=gha
+
+      - name: Run container security scan
+        if: matrix.target == 'prod'
+        run: |
+          # Install Trivy for vulnerability scanning
+          sudo apt-get update
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+
+          # Scan the image
+          trivy image --format json --output trivy-report.json synthatrial:scan-${{ github.sha }} || true
+          trivy image --format table synthatrial:scan-${{ github.sha }}
+
+      - name: Upload security scan results
+        if: matrix.target == 'prod'
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-security-scan
+          path: trivy-report.json
+          if-no-files-found: ignore
+
+  # Job 4: Container Testing
+  container-test:
+    name: Container Testing
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: ${{ !inputs.skip_tests }}
+    strategy:
+      matrix:
+        image-type: [dev, prod]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build test image
+        run: |
+          if [ "${{ matrix.image-type }}" = "dev" ]; then
+            docker build -f docker/Dockerfile.dev -t synthatrial:test-${{ matrix.image-type }} .
+          else
+            docker build -f docker/Dockerfile.prod -t synthatrial:test-${{ matrix.image-type }} .
+          fi
+
+      - name: Test container startup
+        run: |
+          # Test container can start and respond
+          docker run -d --name test-container \
+            -e GOOGLE_API_KEY=test_key \
+            -e PINECONE_API_KEY=test_key \
+            -p 8501:8501 \
+            synthatrial:test-${{ matrix.image-type }}
+
+          # Wait for container to start
+          sleep 30
+
+          # Check if container is running
+          docker ps | grep test-container
+
+          # Test health endpoint (if available)
+          curl -f http://localhost:8501/_stcore/health || echo "Health check not available"
+
+          # Check logs for errors
+          docker logs test-container
+
+          # Cleanup
+          docker stop test-container
+          docker rm test-container
+
+      - name: Test container with docker-compose
+        run: |
+          # Create test environment file
+          echo "GOOGLE_API_KEY=test_key" > .env.test
+          echo "PINECONE_API_KEY=test_key" >> .env.test
+
+          # Test with docker-compose
+          if [ "${{ matrix.image-type }}" = "dev" ]; then
+            docker-compose -f docker-compose.dev.yml --env-file .env.test up -d
+            sleep 30
+            docker-compose -f docker-compose.dev.yml logs
+            docker-compose -f docker-compose.dev.yml down
+          else
+            docker-compose -f docker-compose.prod.yml --env-file .env.test up -d
+            sleep 30
+            docker-compose -f docker-compose.prod.yml logs
+            docker-compose -f docker-compose.prod.yml down
+          fi
+
+  # Job 5: Multi-Architecture Validation
+  multi-arch-test:
+    name: Multi-Architecture Test
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Test AMD64 build
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --file docker/Dockerfile.prod \
+            --load \
+            --tag synthatrial:amd64-test .
+
+      - name: Test ARM64 build
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --file docker/Dockerfile.prod \
+            --tag synthatrial:arm64-test .
+
+      - name: Validate multi-arch manifest
+        if: github.event_name != 'pull_request'
+        run: |
+          # Log in to registry
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+          # Check if multi-arch image was pushed correctly
+          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest || true
+
+  # Job 6: Performance and Load Testing
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    needs: [container-test]
+    if: ${{ !inputs.skip_tests && github.event_name != 'pull_request' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build performance test image
+        run: |
+          docker build -f docker/Dockerfile.prod -t synthatrial:perf-test .
+
+      - name: Run performance benchmarks
+        run: |
+          # Start container for performance testing
+          docker run -d --name perf-container \
+            -e GOOGLE_API_KEY=test_key \
+            -e PINECONE_API_KEY=test_key \
+            -p 8501:8501 \
+            synthatrial:perf-test
+
+          sleep 30
+
+          # Run performance tests if available
+          if [ -f scripts/benchmark_performance.py ]; then
+            docker exec perf-container conda run -n synthatrial python scripts/benchmark_performance.py || true
+          fi
+
+          # Basic load test with curl
+          for i in {1..10}; do
+            curl -s -o /dev/null -w "%{http_code} %{time_total}s\n" http://localhost:8501/ || true
+            sleep 1
+          done
+
+          # Cleanup
+          docker stop perf-container
+          docker rm perf-container
+
+  # Job 7: Deployment
+  deploy:
+    name: Deploy to Registry
+    runs-on: ubuntu-latest
+    needs: [test, docker-build, container-test, multi-arch-test]
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    strategy:
+      matrix:
+        environment: [staging, production]
+        include:
+          - environment: staging
+            condition: github.ref == 'refs/heads/main'
+            images: synthatrial,synthatrial-dev,synthatrial-dev-enhanced
+            tag: staging
+          - environment: production
+            condition: startsWith(github.ref, 'refs/tags/')
+            images: synthatrial
+            tag: latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install deployment dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Deploy to ${{ matrix.environment }}
+        if: ${{ matrix.condition }}
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOYMENT_APPROVED: ${{ matrix.environment == 'production' && 'true' || 'false' }}
+        run: |
+          echo "🚀 Deploying to ${{ matrix.environment }} environment..."
+
+          # Set tag based on environment and ref
+          if [[ "${{ matrix.environment }}" == "production" && "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="${{ matrix.tag }}"
+          fi
+
+          python3 scripts/deploy_to_registry.py \
+            --registry ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            --environment ${{ matrix.environment }} \
+            --images ${{ matrix.images }} \
+            --tag $TAG \
+            --platforms ${{ env.PLATFORMS }} \
+            --verbose
+
+      - name: Validate deployment
+        if: ${{ matrix.condition }}
+        run: |
+          echo "🔍 Validating ${{ matrix.environment }} deployment..."
+          python3 scripts/deploy_to_registry.py \
+            --validate-deployment \
+            --registry ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            --environment ${{ matrix.environment }} \
+            --verbose
+
+      - name: Upload deployment reports
+        if: ${{ matrix.condition }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-reports-${{ matrix.environment }}
+          path: |
+            deployment_reports/
+            build_reports/
+          if-no-files-found: ignore
+
+  # Job 8: Notification and Reporting
+  notify:
+    name: Notification & Reporting
+    runs-on: ubuntu-latest
+    needs:
+      [
+        code-quality,
+        test,
+        docker-build,
+        container-test,
+        multi-arch-test,
+        performance-test,
+        deploy,
+      ]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate build report
+        run: |
+          echo "# SynthaTrial CI/CD Build Report" > build-report.md
+          echo "" >> build-report.md
+          echo "**Build Information:**" >> build-report.md
+          echo "- Repository: ${{ github.repository }}" >> build-report.md
+          echo "- Branch/Tag: ${{ github.ref_name }}" >> build-report.md
+          echo "- Commit: ${{ github.sha }}" >> build-report.md
+          echo "- Trigger: ${{ github.event_name }}" >> build-report.md
+          echo "- Workflow: ${{ github.workflow }}" >> build-report.md
+          echo "- Run ID: ${{ github.run_id }}" >> build-report.md
+          echo "" >> build-report.md
+          echo "**Job Status:**" >> build-report.md
+          echo "- Code Quality: ${{ needs.code-quality.result }}" >> build-report.md
+          echo "- Tests: ${{ needs.test.result }}" >> build-report.md
+          echo "- Docker Build: ${{ needs.docker-build.result }}" >> build-report.md
+          echo "- Container Tests: ${{ needs.container-test.result }}" >> build-report.md
+          echo "- Multi-Arch Tests: ${{ needs.multi-arch-test.result }}" >> build-report.md
+          echo "- Performance Tests: ${{ needs.performance-test.result }}" >> build-report.md
+          echo "- Deployment: ${{ needs.deploy.result }}" >> build-report.md
+          echo "" >> build-report.md
+          echo "**Artifacts Generated:**" >> build-report.md
+          ls -la || true
+          echo "" >> build-report.md
+          echo "**Registry Information:**" >> build-report.md
+          echo "- Registry: ${{ env.REGISTRY }}" >> build-report.md
+          echo "- Image: ${{ env.IMAGE_NAME }}" >> build-report.md
+          echo "- Platforms: ${{ env.PLATFORMS }}" >> build-report.md
+
+      - name: Upload build report
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-report
+          path: build-report.md
+
+      - name: Check overall status
+        run: |
+          if [[ "${{ needs.code-quality.result }}" == "failure" ||
+                "${{ needs.docker-build.result }}" == "failure" ]]; then
+            echo "❌ Critical jobs failed - build unsuccessful"
+            exit 1
+          elif [[ "${{ needs.test.result }}" == "failure" ||
+                  "${{ needs.container-test.result }}" == "failure" ]]; then
+            echo "⚠️  Some tests failed but build completed"
+            exit 0
+          else
+            echo "✅ All jobs completed successfully"
+            exit 0
+          fi

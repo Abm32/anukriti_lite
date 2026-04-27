@@ -1,0 +1,21 @@
+{
+  "_source": "CPIC guideline for rasburicase and G6PD (PMID 24787449), CPIC updates for primaquine and dapsone",
+  "primaquine": {
+    "Normal": "Use standard dose primaquine as indicated for P. vivax radical cure.",
+    "Variable (Heterozygous)": "Moderate risk of haemolysis. Consider G6PD quantitative assay before prescribing. If confirmed >60% activity, use with close monitoring. If <60%, use alternative (tafenoquine contraindicated).",
+    "Deficient (Class III)": "Avoid primaquine. High risk of acute haemolytic anaemia. Use alternative antimalarial regimen without oxidant potential. If no alternative, consider 0.75 mg/kg weekly x 8 weeks with weekly CBC monitoring.",
+    "Severely Deficient (Class II)": "CONTRAINDICATED. Do NOT use primaquine. Severe, potentially life-threatening haemolysis expected. Use alternative antimalarial regimen."
+  },
+  "rasburicase": {
+    "Normal": "Use rasburicase as indicated for tumour lysis syndrome prophylaxis/treatment.",
+    "Variable (Heterozygous)": "Rasburicase generates hydrogen peroxide as a byproduct. Moderate haemolysis risk. Use with caution; monitor for haemolysis. Consider alternative (allopurinol, febuxostat).",
+    "Deficient (Class III)": "CONTRAINDICATED. Rasburicase causes severe haemolytic anaemia in G6PD-deficient patients. Use allopurinol or febuxostat for tumour lysis syndrome management.",
+    "Severely Deficient (Class II)": "CONTRAINDICATED. Do NOT use rasburicase. Life-threatening haemolysis expected. Use allopurinol or febuxostat."
+  },
+  "dapsone": {
+    "Normal": "Use dapsone as indicated (PCP prophylaxis, dermatitis herpetiformis, leprosy).",
+    "Variable (Heterozygous)": "Moderate risk of dapsone-induced haemolytic anaemia. Monitor reticulocyte count and haemoglobin. Consider alternative PCP prophylaxis (atovaquone, pentamidine).",
+    "Deficient (Class III)": "Avoid dapsone. High risk of dose-dependent haemolytic anaemia. Use alternative agents: atovaquone for PCP prophylaxis, trimethoprim-sulfamethoxazole if tolerated, or pentamidine.",
+    "Severely Deficient (Class II)": "CONTRAINDICATED. Do NOT use dapsone. Severe haemolysis expected. Use alternative agents."
+  }
+}

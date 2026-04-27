@@ -1,0 +1,21 @@
+{
+  "_source": "CPIC Guideline for efavirenz and CYP2B6 (PMID: 29034817, updated 2021)",
+  "_cpic_level": "A",
+  "_equity_context": "CYP2B6 poor metabolizers are disproportionately represented in African populations due to *6 (rs3745274) and *18 (rs28399499) allele frequencies. Standard efavirenz dosing (600mg/day) leads to toxic plasma levels in CYP2B6 PMs, causing CNS adverse effects and increasing ART discontinuation in sub-Saharan African patients.",
+  "efavirenz": {
+    "Rapid Metabolizer": "Consider higher dose (800mg/day) or alternative ARV if subtherapeutic levels observed. Monitor viral suppression.",
+    "Normal Metabolizer": "Initiate at standard recommended dose (600 mg/day). No dose adjustment required based on genotype alone.",
+    "Intermediate Metabolizer": "Initiate at standard dose. Consider monitoring plasma efavirenz concentrations to confirm therapeutic levels (1-4 mg/L).",
+    "Poor Metabolizer": "STRONGLY CONSIDER alternative antiretroviral (dolutegravir, rilpivirine). If efavirenz is used, reduce to 400 mg/day and monitor plasma levels. CNS toxicity (nightmares, dizziness, depression) is significantly elevated. Risk of treatment discontinuation in African patients."
+  },
+  "bupropion": {
+    "Normal Metabolizer": "Initiate at standard dose (150-300 mg/day). Standard therapeutic response expected.",
+    "Intermediate Metabolizer": "Standard dosing. Monitor for therapeutic response and tolerability.",
+    "Poor Metabolizer": "Elevated bupropion and hydroxybupropion plasma levels. Initiate at lower dose (150 mg/day). Monitor for increased seizure risk and cardiovascular effects.",
+    "Rapid Metabolizer": "Reduced drug exposure. May require higher doses for therapeutic effect. Monitor depression symptom response."
+  },
+  "cyclophosphamide": {
+    "Normal Metabolizer": "Standard activation rate. Use recommended dose.",
+    "Poor Metabolizer": "Reduced conversion to active metabolite (4-hydroxycyclophosphamide). Potential for reduced efficacy in oncology. Consider alternative alkylating agent or dose escalation with monitoring."
+  }
+}

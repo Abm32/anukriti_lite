@@ -1,0 +1,190 @@
+Anukriti competition article — full text with PDF revision updates applied
+==========================================================================
+Source: merged from Anukriti_article.pdf text + editorial fixes below.
+Use this file when regenerating the PDF or submitting plain text.
+
+--------------------------------------------------------------------------------
+PDF REVISION NOTES (what changed vs the prior PDF)
+--------------------------------------------------------------------------------
+
+One consistency nit — APPLIED IN THE ARTICLE BODY BELOW
+  The earlier PDF listed only HLA-B*57:01 in the pharmacogene panel while the
+  “Why This Matters” section already discussed carbamazepine and HLA-B*15:02.
+  SynthaTrial now implements HLA-B*15:02 (proxy) for anticonvulsants alongside
+  HLA-B*57:01 (abacavir). The revised text:
+  - counts the panel as 17 targets (was 16),
+  - names both HLA proxies in the panel list,
+  - names drug-triggered display for carbamazepine-class drugs.
+
+Retrieval metrics — optional one-liner for judges (not duplicated in body)
+  On 174 SFT-labeled queries: MRR = 1.0 and precision@1 = 1.0 (gold CPIC row
+  ranked first every time); recall@3 = 1.0. With exactly one labeled relevant
+  document per query, precision@3 is ~0.33 by definition (1 relevant in top 3
+  ÷ 3 slots)—report precision@1 / MRR alongside precision@k to avoid confusion.
+
+Agent 2 wording — APPLIED
+  Verification emits multiple explicit statuses (e.g. verified against PharmVar/
+  CPIC table, ambiguous genotype, diplotype not in CPIC phenotype table, locus
+  not queried)—not merely “three states.”
+
+Judge-panel polish (Jan 2026) — APPLIED IN BODY BELOW
+  - Explicit “competitive landscape” framing + AI-native drug-discovery contrast.
+  - Path-to-deployment narrative (later folded into regulatory feedback, Apr 2026).
+  - Economics hook (~$0.0001/simulated patient) in How I Built This (not mid–My Vision).
+  - “Core idea” summary at top of How I Built This.
+  - Market adoption reframed as regulatory / diversity tailwinds + early adopters.
+  - One-line summary of evolution from judge feedback (What I Learned).
+  - Strong closing line before the non-clinical disclaimer.
+
+Surgical pass (final 5%) — APPLIED IN BODY BELOW
+  - My Vision: intentional positioning copy + “vision leap” closing sentences.
+  - Differentiation: one line foregrounding measurable verification/grounding.
+  - How I Built This: framing question before Core idea.
+  - Path-to-deployment prose (superseded Apr 2026; see regulatory feedback).
+  - Closing: upgraded mission paragraph before single disclaimer.
+
+Ultra-polish (winner-tier) — APPLIED IN BODY BELOW
+  - Differentiation: speed/UX line after “in seconds.”
+  - Why This Matters: pacing break (“not edge cases…”).
+  - Closing: inevitability punch + one-line disclaimer (trimmed repetition).
+
+Perfection pass — APPLIED IN BODY BELOW
+  - My Vision: split dense “given a drug…” sentence into two for first-read clarity.
+  - Differentiation: stronger minutes-vs-days line (batch → interactive).
+  - AWS Stack: tighter bullets (fewer adjectives, same coverage).
+
+Ultra-final micro — APPLIED IN BODY BELOW
+  - Path: shortened opening (preclinical focus; dropped repeated “research + preclinical”).
+  - Competitive landscape: split AI-native layer into two sentences.
+  - Verifiability: closing moat line (interrogated, measured, trusted).
+  - Light trim: “explicitly / intentionally / practical” and a few redundant “explicit”s.
+
+Absolute-perfection micro — APPLIED IN BODY BELOW
+  - Vision: “operates as a preclinical simulation system” (avoids echoing Path wording).
+  - Vision: engine sentence ends with “producing structured outputs for analysis.”
+  - Closing: “keep building” cadence on final line.
+
+Perfectionist nudge (optional) — APPLIED IN BODY BELOW
+  - Path: dropped one “preclinical” from the opening clause (kept in “preclinical and translational layer” next sentence).
+  - Differentiation: “explored interactively” (rhythm) vs “explorable interactively.”
+
+Judge panel review (structural) — APPLIED IN BODY BELOW
+  - Vision: human vignette + equity hook; Anukriti name; economics in How I Built.
+  - Competitive: PharmCAT vs Anukriti table + ~240×; GWAS 83.8% only in Why This Matters; end on equity.
+  - Why This Matters: consistent case pattern; single GWAS stat.
+  - How I Built: LLM subsection; AWS tradeoffs; $0.0001; Consistency Auditor / Grounding Scorer; HLA proxy rationale.
+  - Standalone “Path to deployment” removed; roadmap detail folded into regulatory feedback in What I Learned.
+
+Judicial feedback round (Apr 2026) — APPLIED IN BODY BELOW
+  - PharmCAT vs Anukriti quantified table (setup, single-sample, cohort, ~240× research velocity).
+  - Virtual Phase 0 framing in market-adoption response (de-risk wet lab vs redesign Phase III).
+  - HLA tag-SNP proxy rationale (MHC complexity, short-read VCF limits, imputation).
+  - Functional agent names (Consistency Auditor, Grounding Scorer) alongside code paths in verifiability table.
+  - Vision polish (she pronoun, sharper equity pivot, harm/spreadsheet line); closing restores inevitability line after gap sentence.
+
+Submission narrative refresh (Apr 2026) — APPLIED IN BODY BELOW
+  - App Category: $0.0001 + Global South democratization line (economics repeated in How I Built).
+  - Vision: Virtual Phase 0 in-vision; streamlines stats (90%/UK ADR block removed); PREPARE + 99.5% moved to Why This Matters.
+  - Differentiation: three-category “failure mode” framing + 240× wall-clock footnote; table wording (browser-based).
+  - Why This Matters: clopidogrel case removed; GWAS + “gap Anukriti exposes” sentence; trimmed market cross-section.
+  - How I Built: milestone narrative, AWS list, verification prose (article simplifies Agent 2 labels for readability—see Agent 2 note above for full statuses).
+  - What I Learned: reflective essay (judge surprises, Virtual Phase 0 framing story); dropped bullet-by-bullet feedback list.
+  - Demo: YouTube embed instruction for competition editor.
+  - Optional: add architecture diagram to PDF/portal (see docs/ANUKRITI_ARTICLE_PDF_REVISION_NOTES.txt).
+
+--------------------------------------------------------------------------------
+FULL ARTICLE (revised)
+--------------------------------------------------------------------------------
+
+Project Anukriti
+
+App Category
+Social Impact — Making population-diverse pharmacogenomic safety screening accessible before expensive lab or trial work begins, with an equity lens on underrepresented genomes. At $0.0001 per simulated patient, Anukriti democratizes genomic safety research for academic labs in the Global South — India, Sub-Saharan Africa, Southeast Asia — that lack the bioinformatics clusters to run population-scale cohort analysis today.
+
+My Vision
+A child is sent home on codeine after tonsillectomy. If she is a CYP2D6 ultrarapid metabolizer, morphine conversion outpaces safe clearance — and a standard dose becomes lethal. Elsewhere, a patient in East Asia carries an HLA allele that Phase III trials in European-majority cohorts never surfaced. A common anticonvulsant triggers Stevens-Johnson syndrome. The harm appears before any spreadsheet captures it.
+
+Why do the same drugs fail differently depending on where you were born? Because for most of pharmaceutical history, evidence has been built on European-majority genomes — and then prescribed to everyone else.
+
+I named the project Anukriti — Sanskrit for response, reaction, or replication (the echo of a signal). Given a drug and genomic input (VCF, S3, or streamed 1000 Genomes data), Anukriti runs a deterministic pharmacogenomic engine across diverse populations, retrieving CPIC-aligned evidence via Amazon Titan embeddings and generating auditable interpretations with Amazon Nova.
+
+The core proposition is a Virtual Phase 0: a genomic safety simulation across globally representative populations before committing wet-lab budget. It operates as a preclinical simulation system — not to replace clinical judgment, but to surface population-level safety signals earlier, when intervention is still possible.
+
+How It Differs from What Already Exists
+Existing tools fall into three categories, and each fails the equity problem in a distinct way.
+
+Clinical platforms (QIAGEN PGXI, Myriad Genetics, GenMark Dx) offer certified patient-level testing but at high cost and without cohort-level simulation across diverse ancestries. Their incentive structure optimizes for regulated single-patient reports, not population safety research.
+
+Academic tools (PharmCAT, PGxDB) require bioinformatics expertise, manual pipeline setup, and hours of compute for multi-population cohort runs. They are not designed for exploratory simulation — they are designed for careful, single-sample analysis.
+
+AI-native drug discovery platforms (Insilico Medicine, Recursion) focus on molecule discovery and target identification. Neither addresses population-specific safety simulation across diverse genomes before trials. The equity gap is simply outside their product scope.
+
+Anukriti is a complementary layer: guideline-aligned PGx calling plus cohort simulation where representation gaps actually hurt.
+
+| Task | PharmCAT (typical path) | Anukriti |
+|------|------------------------|----------|
+| Environment setup | Java, reference data download, manual phenotype mapping | Browser-based — no install required |
+| Single-sample run | 15–30 min pipeline | ~30 seconds |
+| Population cohort (AFR + EAS + SAS) | Hours; requires bioinformatics expertise | Same 30-second browser run |
+| Research velocity multiplier | 1× baseline | ~240× faster to first result |
+
+The 240× speed figure reflects wall-clock time from query to first result across a multi-ancestry cohort, compared to a standard PharmCAT pipeline run with manual phenotype mapping — the difference between a dedicated bioinformatics sprint and an exploratory afternoon.
+
+The deeper differentiation is the equity lens. Drugs optimized on European-majority evidence are prescribed worldwide. Anukriti makes diverse-cohort simulation across AFR, EUR, EAS, SAS, and AMR ancestries from the 1000 Genomes Project the default, not an afterthought — and does so on AWS Free Tier–class infrastructure.
+
+Why This Matters
+The case for population-aware pharmacogenomics is built on documented, preventable harm.
+
+When codeine is prescribed to a CYP2D6 ultrarapid metabolizer, morphine conversion is so rapid that standard doses can cause fatal respiratory depression. In North Africa and Ethiopia, up to 28% of individuals carry this metabolizer status — a rate tied to child deaths after tonsillectomy and to the FDA's contraindication in children under 12.
+
+When carbamazepine is given to a Han Chinese patient carrying HLA-B*15:02, the odds ratio for Stevens-Johnson Syndrome exceeds 2,500. The allele is virtually absent in European populations — which is exactly why Western trials never flagged the risk. Post-market harm in Taiwan drove mandatory screening.
+
+Abacavir causes severe hypersensitivity in carriers of HLA-B*57:01; before routine screening, roughly 8% of exposed patients were affected. The allele reaches about 11% in Southwest Asian populations — nearly double typical European rates. Mandatory genotyping cut incidence below 0.5%.
+
+As of 2021, 83.8% of GWAS participants were of European ancestry. The harm patterns fall hardest on South Asian, East Asian, African, and Pacific Islander populations — the same groups least represented in the genomic corpora that steer drug development. This is the gap Anukriti is built to expose: if a drug's safety profile was validated on European-majority cohorts, Anukriti will show what that profile looks like when run across the populations who were absent from the original trials.
+
+The PREPARE trial showed pre-emptive pharmacogenomic panel testing reduced adverse drug reactions by 30% (U-PGx consortium, Lancet 2023). Yet 99.5% of people carry at least one variant that can alter drug response, and most are never genotyped before prescribing.
+
+How I Built This
+Architecture: User → Streamlit UI → FastAPI → Deterministic PGx Engine → RAG (Amazon Titan + local CPIC index) → Amazon Nova / Claude / Gemini → Structured Output + PDF + FHIR-style JSON.
+
+AWS services used: Amazon Bedrock (Nova as default LLM, with Claude as fallback), Amazon Titan (embeddings for RAG over CPIC guidelines), EC2 with Docker Compose (portable, image-pinned stack for FastAPI and Streamlit), S3 with Intelligent Tiering (VCF storage), Lambda and Step Functions (batch orchestration), and CloudWatch (cost and failure visibility).
+
+Key development milestones: The project launched with 8 pharmacogenes. After judge feedback flagged coverage gaps, the panel expanded to 17 targets — including CYP2D6 (copy-number-aware), CYP2C19, CYP2C9, HLA-B*57:01 proxy (abacavir hypersensitivity), HLA-B*15:02 proxy (carbamazepine-class SJS/TEN risk), and nine additional genes covering 75%+ of genetically modifiable ADRs. The verifiability pipeline — Consistency Auditor and Grounding Scorer — was added in a second iteration after early testing showed how easily an LLM-only result could appear authoritative without being auditable.
+
+Where LLMs touch the pipeline — and where they don't: On the primary Bedrock path, Amazon Nova explains and reformats outputs that the deterministic engine has already fixed. Nova does not decide star alleles, phenotypes, or risk tiers — it narrates what the engine determined. This boundary matters because PharmVar star-allele definitions are dynamic (471 alleles added and 49 redefined between versions 1.1.9 and 6.2); hard-coded tables make those changes auditable, whereas an LLM would absorb them silently as hallucinations.
+
+Verification pipeline: Rather than a single black-box result, the system runs two layered agents. The Consistency Auditor (Agent 2) checks each gene call against bundled PharmVar/CPIC tables and labels every output as verified, ambiguous, or not in CPIC table — meaning the 471 alleles added between PharmVar versions 1.1.9 and 6.2 are caught by table update, not silently absorbed by a model. The Grounding Scorer (Agent 5) computes sentence-level overlap of Nova's explanation against the retrieved CPIC passages, surfacing a grounding score without an additional model call. Together these give a per-run audit trail that is aggregable across cohorts.
+
+Amazon Titan was chosen for RAG specifically because its embedding API is available within the same Bedrock region as Nova, keeping latency low and the stack entirely within AWS without external API calls. On the LLM orchestration layer, Nova is the default; if Bedrock is region- or quota-gated, the stack falls back to Claude unchanged; Ollama supports fully local text generation for air-gapped demos where no cloud connectivity is available.
+
+Streaming VCFs from AWS Open Data via HTTPS range requests made AFR, EAS, SAS, and AMR cohort simulation the default — no terabyte downloads required. At roughly $0.0001 per simulated patient, large exploratory runs stay feasible without enterprise procurement for every what-if.
+
+On 174 SFT-labeled PGx queries, retrieval achieves MRR 1.0, precision@1 1.0, and recall@3 1.0 — the gold CPIC document ranks first every time.
+
+Demo
+Demo video: https://www.youtube.com/watch?v=zu-1reih7wA
+(Please embed using the "Insert YouTube embed" feature in the article editor.)
+
+Live demo: anukriti.abhimanyurb.com
+API docs: anukritibackend.abhimanyurb.com/docs
+GitHub: github.com/Abm32/Synthatrial
+
+The recording leads with the equity narrative before the interface walkthrough — judges encounter the why before the how.
+
+What I Learned
+Judge feedback that changed the project most:
+
+The "limited gene panel" critique was the most directly actionable — it led to the expansion from 8 to 17 targets, with explicit prioritization by CPIC Tier A evidence. The "regulatory pathway unclear" critique led to a concrete regulatory roadmap document in the repo, not just a disclaimer. Every output now carries a non-clinical label, and the roadmap stages what a regulated claim would actually require.
+
+What genuinely surprised me:
+
+I assumed the hardest problem would be the genomics engine — getting star-allele calling right across diverse populations. The harder problem turned out to be the verification architecture. Early versions produced results that looked authoritative but were not auditable. The Consistency Auditor and Grounding Scorer were not planned from the start; they emerged from the uncomfortable realization that "trust the model" is not a healthcare architecture. Once I separated what the deterministic engine decides from what the LLM explains, reliability improved sharply — and the system became honest about what it does not know.
+
+I also underestimated how much the framing matters. Describing Anukriti as a "research tool" was accurate but undersold its value. The Virtual Phase 0 framing — run a genomic safety simulation across diverse populations before committing wet-lab budget — makes the cost de-risking argument concrete. De-risk spend rather than disrupt process. That framing emerged from pressure-testing the market adoption critique, and it is now central to how I describe the project.
+
+The core insight: Population-aware pharmacogenomic simulation is not aspirational — the evidence base for it already exists. Four continents of documented population-linked harm, a 30% ADR reduction from pre-emptive panel testing, and FDA and NIH pressure on trial diversity (including the NIH's All of Us program and FDA guidance on diversity action plans) all point in the same direction. Early adopters are academic PGx labs, safety researchers, and bioinformatics educators. The $0.0001-per-patient economics keep large cohort exploration off the critical path of enterprise procurement — which is exactly where a new tool needs to be to prove itself.
+
+The question is no longer whether population-aware simulation is needed — but how long we can afford to keep building without it.
+
+For research and educational use only — not for clinical decision-making.

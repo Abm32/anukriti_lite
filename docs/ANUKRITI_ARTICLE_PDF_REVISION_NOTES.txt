@@ -1,0 +1,57 @@
+Anukriti article (PDF) — optional revision notes
+================================================
+
+Full revised article text (notes + integrated fixes) lives in:
+  docs/Anukriti_article_revised_full.txt
+
+One consistency nit (optional edit in a future PDF revision)
+
+The 16-gene panel bullet lists HLA-B*57:01 via proxy but the carbamazepine /
+HLA-B*15:02 story appears earlier. The codebase now includes HLA-B*15:02
+(anticonvulsants) alongside B*57:01. Consider adding HLA-B*15:02 (proxy) to the
+panel list so the clinical story and panel line up.
+
+(Status: applied in Anukriti_article_revised_full.txt — 17-gene panel, both HLAs,
+ drug-trigger lines, Agent 2 wording, precision@k judge note.)
+
+Jan 2026 judge-panel narrative polish is also in that file: competitive landscape
+labeling, AI-discovery layer paragraph, economics (~$0.0001) in How I Built This
+(not mid–Vision), core idea blurb, LLM boundary, verifiability, equity framing.
+
+Apr 2026 judicial feedback round: standalone Path to deployment removed (detail
+in regulatory feedback); PharmCAT vs Anukriti table + ~240×; Virtual Phase 0;
+HLA proxy rationale; Consistency Auditor / Grounding Scorer table; Vision and
+closing polish as in body.
+
+Later Apr 2026 submission narrative: three-way competitive framing; App Category
+Global South + $0.0001; Vision streamlines stats; Why This Matters trims
+clopidogrel + adds Anukriti “expose the gap” sentence; How I Built as milestone
++ AWS list + verification prose; What I Learned as reflective essay; Demo embed
+note. Optional architecture figure for PDF/portal: horizontal pipeline
+(Streamlit → FastAPI → deterministic PGx engine → Titan embeddings + local CPIC
+index → Amazon Nova), with side inputs (S3 Intelligent Tiering VCFs, 1000
+Genomes via HTTPS range requests on AWS Open Data), batch lane (Lambda + Step
+Functions), outputs (structured JSON, PDF, FHIR-style), and post-hoc verification
+boxes (Consistency Auditor / Agent 2 on table calls, Grounding Scorer / Agent 5
+on explanation vs retrieved CPIC). Use a “decision layer vs explanation layer”
+visual split (solid box for deterministic engine, dashed for LLM narrative).
+
+Final surgical pass: intentional positioning in Vision, vision-leap sentences,
+verification/grounding line in differentiation, judge question before Core idea,
+path opening + roadmap wording (less “does not claim”), tightened closing +
+single-line disclaimer.
+
+Ultra-polish: speed/minutes line in differentiation; “not edge cases” beat in
+Why This Matters; closing inevitability sentence; disclaimer shortened to one line.
+
+Perfection pass: Vision paragraph split; stronger interactive-vs-batch line;
+compressed AWS Stack bullets.
+
+Ultra-final micro: Path lead-in de-duplicated; AI-native paragraph split;
+verifiability moat closing line; filler-word trim (explicit/intentionally/practical).
+
+Absolute-perfection micro: Vision “operates as…” + structured outputs clause;
+closing “keep building” line.
+
+Perfectionist nudge: Path drops one “preclinical” in lead-in; “explored
+interactively” rhythm line in differentiation.

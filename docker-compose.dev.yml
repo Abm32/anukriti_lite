@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  synthatrial-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    container_name: synthatrial-dev
+    ports:
+      - "8501:8501" # Streamlit
+      - "8888:8888" # Jupyter (optional)
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_INDEX=${PINECONE_INDEX:-drug-index}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app:rw # Mount entire project for development
+      - ./data:/app/data:rw # Mount data directory
+      - ./logs:/app/logs:rw # Mount logs directory
+    command: ["streamlit"]
+    restart: unless-stopped
+    networks:
+      - synthatrial-dev-network
+
+  # Redis cache for VCF streaming and general caching
+  redis:
+    image: redis:7-alpine
+    container_name: synthatrial-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    networks:
+      - synthatrial-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Jupyter notebook service for development
+  jupyter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    container_name: synthatrial-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_INDEX=${PINECONE_INDEX:-drug-index}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      - .:/app:rw
+      - ./data:/app/data:rw
+      - ./notebooks:/app/notebooks:rw
+    command:
+      [
+        "conda",
+        "run",
+        "-n",
+        "synthatrial",
+        "jupyter",
+        "lab",
+        "--ip=0.0.0.0",
+        "--port=8888",
+        "--no-browser",
+        "--allow-root",
+      ]
+    restart: unless-stopped
+    networks:
+      - synthatrial-dev-network
+    profiles:
+      - jupyter
+
+  # Development Nginx with SSL (optional)
+  nginx-dev:
+    image: nginx:alpine
+    container_name: synthatrial-nginx-dev
+    ports:
+      - "8443:443"
+      - "8080:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:rw
+      - ./docker/nginx-ssl-setup.sh:/etc/nginx/nginx-ssl-setup.sh:ro
+      - ./docker/nginx-entrypoint.sh:/docker-entrypoint.sh:ro
+      - ./docker/ssl:/etc/nginx/ssl:rw
+    depends_on:
+      - synthatrial-dev
+    restart: unless-stopped
+    networks:
+      - synthatrial-dev-network
+    profiles:
+      - nginx-dev
+    entrypoint: ["/docker-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-k", "https://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  synthatrial-dev-network:
+    driver: bridge

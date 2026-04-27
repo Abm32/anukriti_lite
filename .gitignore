@@ -1,0 +1,125 @@
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Jupyter / notebooks
+.ipynb_checkpoints/
+notebooks/
+
+# Docker
+.docker/
+docker-compose.override.yml
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Docker volumes and logs
+logs/
+*.log
+
+# SSL certificates (keep private)
+docker/ssl/
+
+# LM fine-tuning artifacts (regenerate from CPIC JSON or your own corpus)
+data/training/*.jsonl
+training_outputs/
+
+# Local training venv (optional)
+.venv-train/
+
+# Data / large files
+data/genomes/
+data/chembl/
+data/models/*.joblib
+data/models/*.npz
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.tar.gz
+*.zip
+
+# Streamlit / cache
+.streamlit/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# LaTeX files
+*.tex
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+
+
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE files
+.kiro/specs/
+*.backup
+
+# Environment files
+.env.*
+!.env.example
+
+# Testing and Reports
+.hypothesis/
+htmlcov/
+.pytest_cache/
+test-results/
+tests/reports/
+build_reports/
+deployment_reports/
+monitoring_reports/
+*_report.json
+*.html
+
+# Project specific
+dev_setup_report.json
+drawings.html
+
+# Type checking / IDE
+.mypy_cache/
+
+# Temporary / junk
+nano
+response.json
+api.log
+awscliv2.zip
+
+# Unzipped PGx pack (use data/pgx and scripts from repo)
+synthatrial_pgx_v0_3/
+warfarin_pgx_pack/
+slco1b1_pgx_pack/
+aws/dist
+
+anukriti_submission
+
+# DeepVariant validation fixtures (very large binaries; keep out of git)
+deepvariant_validation/input/
+
+# Regenerated local ChEMBL fingerprint cache (vector search warm-up)
+data/vector_index_cache/

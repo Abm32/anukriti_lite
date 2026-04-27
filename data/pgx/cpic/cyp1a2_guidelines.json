@@ -1,0 +1,20 @@
+{
+  "_source": "CPIC and PharmGKB CYP1A2 drug guidelines",
+  "clozapine": {
+    "Normal Metabolizer": "Use standard recommended dose. Monitor plasma clozapine concentrations. Smoking status significantly alters CYP1A2 activity — dose adjustment required if smoking status changes.",
+    "Intermediate Metabolizer": "Consider 25% dose reduction. Monitor plasma clozapine concentrations closely. Reduce dose if patient is a non-smoker.",
+    "Poor Metabolizer": "Consider 50% dose reduction. High risk of clozapine toxicity (seizures, agranulocytosis). Therapeutic drug monitoring essential.",
+    "Rapid Metabolizer (when induced)": "Patients who smoke may require up to 1.5x higher doses. Abrupt smoking cessation can cause 50% increase in clozapine levels — monitor closely."
+  },
+  "theophylline": {
+    "Normal Metabolizer": "Initiate with standard dose. Monitor serum theophylline levels. Target 5-15 mcg/mL.",
+    "Intermediate Metabolizer": "Initiate with 75% of standard dose. Monitor levels closely.",
+    "Poor Metabolizer": "Initiate with 50% of standard dose. High risk of toxicity (nausea, arrhythmia, seizures). Frequent monitoring required.",
+    "Rapid Metabolizer (when induced)": "Higher doses may be needed. Monitor serum levels to confirm therapeutic range."
+  },
+  "caffeine": {
+    "Normal Metabolizer": "Normal caffeine metabolism. Standard use.",
+    "Poor Metabolizer": "Increased sensitivity to caffeine effects. Elevated cardiovascular risk at high doses. Consider reduction.",
+    "Rapid Metabolizer (when induced)": "Rapid caffeine clearance. Lower cardiovascular risk associated with high consumption."
+  }
+}

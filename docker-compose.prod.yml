@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  synthatrial:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.prod
+    container_name: synthatrial-prod
+    ports:
+      - "80:8501" # Map to port 80 for production
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_INDEX=${PINECONE_INDEX:-drug-index}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - VECTOR_DB_BACKEND=${VECTOR_DB_BACKEND:-qdrant}
+      - EMBEDDING_BACKEND=${EMBEDDING_BACKEND:-local}
+      - QDRANT_URL=${QDRANT_URL:-http://qdrant:6333}
+      - QDRANT_COLLECTION=${QDRANT_COLLECTION:-drug-index}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - REDIS_VCF_CACHE_TTL=${REDIS_VCF_CACHE_TTL:-86400}
+    volumes:
+      - ./data:/app/data:ro # Read-only data mount
+      - ./logs:/app/logs:rw # Writable logs
+      - ./.env:/app/.env:ro # Read-only environment
+    restart: always
+    depends_on:
+      - qdrant
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - synthatrial-prod-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: "2.0"
+        reservations:
+          memory: 2G
+          cpus: "1.0"
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: synthatrial-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-storage:/qdrant/storage
+    restart: always
+    networks:
+      - synthatrial-prod-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: synthatrial-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    restart: always
+    networks:
+      - synthatrial-prod-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Reverse proxy with enhanced SSL support
+  nginx:
+    image: nginx:alpine
+    container_name: synthatrial-nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:rw
+      - ./docker/nginx-ssl-setup.sh:/etc/nginx/nginx-ssl-setup.sh:ro
+      - ./docker/nginx-entrypoint.sh:/docker-entrypoint.sh:ro
+      - ./docker/ssl:/etc/nginx/ssl:rw
+    depends_on:
+      - synthatrial
+    restart: always
+    networks:
+      - synthatrial-prod-network
+    profiles:
+      - nginx
+    entrypoint: ["/docker-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-k", "https://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  qdrant-storage:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  synthatrial-prod-network:
+    driver: bridge

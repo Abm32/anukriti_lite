@@ -1,0 +1,11 @@
+{
+  "query": "CYP2C19 clopidogrel pharmacogenomics",
+  "context": "CYP2C19 poor metabolizers have reduced formation of clopidogrel active metabolite and higher risk of reduced antiplatelet response.",
+  "pgx_data": {
+    "gene": "CYP2C19",
+    "genotype": "*2/*2",
+    "phenotype": "Poor metabolizer",
+    "risk": "High",
+    "recommendation": "Consider an alternative antiplatelet not dependent on CYP2C19 activation when clinically appropriate."
+  }
+}

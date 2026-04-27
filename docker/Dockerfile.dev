@@ -1,0 +1,73 @@
+# Development Dockerfile for SynthaTrial
+# Optimized for development with hot reloading and debugging
+
+FROM continuumio/miniconda3:latest
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV CONDA_ENV_NAME=synthatrial
+
+# Install system dependencies including debugging tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    vim \
+    htop \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create conda environment
+RUN conda create -n $CONDA_ENV_NAME python=3.10 -y
+
+# Activate conda environment
+SHELL ["conda", "run", "-n", "synthatrial", "/bin/bash", "-c"]
+
+# Install RDKit and scientific packages
+RUN conda install -n $CONDA_ENV_NAME -c conda-forge \
+    rdkit \
+    pandas \
+    scipy \
+    scikit-learn \
+    numpy \
+    jupyter \
+    ipython \
+    -y
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN conda run -n $CONDA_ENV_NAME pip install --no-cache-dir -r requirements.txt
+
+# Install development dependencies
+RUN conda run -n $CONDA_ENV_NAME pip install --no-cache-dir \
+    pytest \
+    pytest-cov \
+    pytest-xdist \
+    pytest-mock \
+    black \
+    isort \
+    flake8 \
+    mypy \
+    bandit \
+    pre-commit \
+    coverage
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create directories
+RUN mkdir -p data/genomes data/chembl logs
+
+# Expose ports
+EXPOSE 8501 8888
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Default command
+CMD ["streamlit"]

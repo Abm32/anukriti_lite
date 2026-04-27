@@ -1,0 +1,21 @@
+{
+  "_source": "CPIC Guideline for isoniazid and NAT2 (PMID: 34042408, 2021)",
+  "_cpic_level": "A",
+  "_equity_context": "NAT2 slow acetylators accumulate isoniazid (and its toxic metabolite hydrazine), leading to peripheral neuropathy and hepatotoxicity. Rapid acetylators may have subtherapeutic levels increasing TB treatment failure risk. This gene is particularly relevant for global equity as TB disproportionately affects low-income populations.",
+  "isoniazid": {
+    "Rapid Acetylator": "Standard or higher dose isoniazid (5-10 mg/kg/day). Risk of subtherapeutic levels and treatment failure. WHO recommends standard dose; consider therapeutic drug monitoring in high-burden settings. Co-administer pyridoxine (B6) prophylactically.",
+    "Intermediate Acetylator": "Standard recommended dose (5 mg/kg/day, max 300mg). Therapeutic drug monitoring recommended if standard regimen fails. Pyridoxine supplementation recommended.",
+    "Slow Acetylator": "Increased risk of isoniazid-induced peripheral neuropathy and hepatotoxicity. Consider dose reduction (2.5-3.5 mg/kg/day) or enhanced monitoring. Pyridoxine (B6) supplementation is STRONGLY recommended (25-50 mg/day). Monitor liver enzymes monthly for first 3 months. If toxicity occurs, consider rifampicin-based regimen without isoniazid."
+  },
+  "sulfamethoxazole": {
+    "Rapid Acetylator": "Standard dosing. Therapeutic levels generally maintained.",
+    "Slow Acetylator": "Reduced acetylation of hydroxylamine metabolites. Elevated risk of adverse effects including rash and hematologic toxicity with sulfonamides."
+  },
+  "hydralazine": {
+    "Rapid Acetylator": "Higher acetylation rate may reduce efficacy. Monitor blood pressure response. Higher doses may be needed.",
+    "Slow Acetylator": "Drug-induced lupus erythematosus (DILE) risk is significantly elevated. Consider alternative antihypertensive. If used, monitor for lupus symptoms (ANA titers, joint pain, rash)."
+  },
+  "procainamide": {
+    "Slow Acetylator": "Elevated risk of drug-induced lupus. Monitor ANA titers. Consider amiodarone or other alternatives for long-term antiarrhythmic therapy."
+  }
+}

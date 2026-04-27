@@ -1,0 +1,13 @@
+[
+  {"gene": "CYP2C19", "variants": {"rs4244285": "A"}, "expected": "Intermediate Metabolizer", "description": "CYP2C19 *1/*2 (PharmVar rs4244285 A) - CPIC benchmark"},
+  {"drug_name": "Codeine", "gene": "CYP2D6", "alleles": ["*1", "*4"], "expected_phenotype": "intermediate_metabolizer", "description": "CYP2D6 *1/*4 - one no-function allele"},
+  {"drug_name": "Codeine", "gene": "CYP2D6", "alleles": ["*4", "*4"], "expected_phenotype": "poor_metabolizer", "description": "CYP2D6 *4/*4 - poor metabolizer"},
+  {"drug_name": "Codeine", "gene": "CYP2D6", "alleles": ["*1", "*1"], "expected_phenotype": "extensive_metabolizer", "description": "CYP2D6 *1/*1 - normal"},
+  {"drug_name": "Warfarin", "gene": "CYP2C9", "alleles": ["*1", "*3"], "expected_phenotype": "extensive_metabolizer", "description": "CYP2C9 *1/*3 (AS 1.5 – extensive in this implementation)"},
+  {"drug_name": "Warfarin", "gene": "CYP2C9", "alleles": ["*1", "*1"], "expected_phenotype": "extensive_metabolizer", "description": "CYP2C9 *1/*1 - normal"},
+  {"drug_name": "Clopidogrel", "gene": "CYP2C19", "alleles": ["*2", "*2"], "expected_phenotype": "poor_metabolizer", "description": "CYP2C19 *2/*2 - loss of function"},
+  {"drug_name": "Clopidogrel", "gene": "CYP2C19", "alleles": ["*1", "*17"], "expected_phenotype": "extensive_metabolizer", "description": "CYP2C19 *1/*17 - normal/increased (AS 2.0)"},
+  {"drug_name": "Clopidogrel", "gene": "CYP2C19", "variants": {"rs4244285": {"ref": "G", "alt": "A", "gt": "0/1"}}, "expected_phenotype": "intermediate_metabolizer", "description": "CYP2C19 *1/*2 (PharmVar rs4244285 A) → Intermediate (CPIC)"},
+  {"drug_name": "Clopidogrel", "gene": "CYP2C19", "variants": {"rs4244285": {"ref": "G", "alt": "A", "gt": "1/1"}}, "expected_phenotype": "poor_metabolizer", "description": "CYP2C19 *2/*2 (PharmVar rs4244285 A/A) → Poor (CPIC)"},
+  {"drug_name": "Clopidogrel", "gene": "CYP2C19", "variants": {"rs12248560": {"ref": "C", "alt": "T", "gt": "0/1"}}, "expected_phenotype": "extensive_metabolizer", "description": "CYP2C19 *1/*17 (PharmVar rs12248560 T) → Rapid (CPIC)"}
+]

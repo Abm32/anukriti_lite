@@ -1,0 +1,428 @@
+# Enhanced Development Dockerfile for SynthaTrial
+# Optimized for development with comprehensive tooling, hot reloading, and debugging
+# Version: 0.2 Beta
+
+FROM continuumio/miniconda3:latest
+
+# Set environment variables for development
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app
+ENV CONDA_ENV_NAME=synthatrial
+ENV DEVELOPMENT_MODE=1
+ENV STREAMLIT_SERVER_HEADLESS=true
+ENV STREAMLIT_SERVER_ENABLE_CORS=false
+ENV STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+
+# Install system dependencies including comprehensive development tools
+RUN apt-get update && apt-get install -y \
+    # Basic utilities
+    curl \
+    wget \
+    git \
+    build-essential \
+    # Development and debugging tools
+    vim \
+    nano \
+    htop \
+    tree \
+    jq \
+    # Network debugging
+    netcat-openbsd \
+    telnet \
+    # Process monitoring
+    procps \
+    # File watching for hot reload
+    inotify-tools \
+    # SSL/TLS tools
+    openssl \
+    ca-certificates \
+    # Container debugging
+    strace \
+    gdb \
+    # Performance profiling
+    valgrind \
+    # Documentation tools
+    pandoc \
+    # Shell enhancements
+    zsh \
+    fish \
+    # Version control enhancements
+    git-lfs \
+    # Archive tools
+    unzip \
+    zip \
+    # Clean up
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Install Node.js for modern development tools
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g \
+        # Code formatting and linting
+        prettier \
+        eslint \
+        # Documentation tools
+        @mermaid-js/mermaid-cli \
+        # Development utilities
+        nodemon \
+        # Container tools
+        dockerfile-language-server-nodejs
+
+# Create conda environment with enhanced scientific stack
+RUN conda create -n $CONDA_ENV_NAME python=3.10 -y
+
+# Activate conda environment for all subsequent commands
+SHELL ["conda", "run", "-n", "synthatrial", "/bin/bash", "-c"]
+
+# Install RDKit and comprehensive scientific packages
+RUN conda install -n $CONDA_ENV_NAME -c conda-forge \
+    # Core scientific stack
+    rdkit \
+    pandas \
+    scipy \
+    scikit-learn \
+    numpy \
+    matplotlib \
+    seaborn \
+    plotly \
+    # Development and analysis tools
+    jupyter \
+    jupyterlab \
+    ipython \
+    ipywidgets \
+    # Performance tools
+    numba \
+    cython \
+    # Data processing
+    openpyxl \
+    xlsxwriter \
+    # Visualization
+    graphviz \
+    # Parallel processing
+    dask \
+    # Memory profiling
+    memory_profiler \
+    -y
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN conda run -n $CONDA_ENV_NAME pip install --no-cache-dir -r requirements.txt
+
+# Install comprehensive development dependencies
+RUN conda run -n $CONDA_ENV_NAME pip install --no-cache-dir \
+    # Testing framework
+    pytest>=7.0.0 \
+    pytest-cov>=4.1.0 \
+    pytest-xdist>=3.5.0 \
+    pytest-mock>=3.12.0 \
+    pytest-benchmark>=4.0.0 \
+    pytest-html>=4.1.0 \
+    pytest-json-report>=1.5.0 \
+    pytest-timeout>=2.2.0 \
+    pytest-asyncio>=0.23.0 \
+    # Property-based testing
+    hypothesis>=6.0.0 \
+    # Code quality and formatting
+    black>=23.12.0 \
+    isort>=5.13.0 \
+    flake8>=7.0.0 \
+    mypy>=1.8.0 \
+    bandit>=1.7.5 \
+    # Pre-commit hooks
+    pre-commit>=3.6.0 \
+    # Coverage and reporting
+    coverage>=7.4.0 \
+    codecov>=2.1.13 \
+    # Documentation
+    sphinx>=7.2.0 \
+    sphinx-rtd-theme>=2.0.0 \
+    myst-parser>=2.0.0 \
+    # Performance profiling
+    line_profiler>=4.1.0 \
+    py-spy>=0.3.14 \
+    scalene>=1.5.26 \
+    # Debugging tools
+    pdb++ \
+    ipdb>=0.13.13 \
+    pudb>=2023.1 \
+    # Development utilities
+    watchdog>=4.0.0 \
+    python-dotenv>=1.0.0 \
+    rich>=13.7.0 \
+    typer>=0.9.0 \
+    # Security scanning
+    safety>=3.0.0 \
+    semgrep>=1.45.0 \
+    # Container tools
+    docker>=7.0.0 \
+    docker-compose>=1.29.0 \
+    # API development
+    httpx>=0.26.0 \
+    requests-mock>=1.11.0 \
+    # Data validation
+    pydantic>=2.5.0 \
+    marshmallow>=3.20.0 \
+    # Async development
+    aiofiles>=23.2.1 \
+    asyncio-mqtt>=0.16.0 \
+    # Development server enhancements
+    uvicorn>=0.25.0 \
+    gunicorn>=21.2.0
+
+# Install additional development tools via pip
+RUN conda run -n $CONDA_ENV_NAME pip install --no-cache-dir \
+    # Jupyter extensions
+    jupyterlab-git \
+    jupyterlab-lsp \
+    jupyter-lsp \
+    # LSP servers for better IDE support
+    python-lsp-server[all] \
+    # Notebook enhancements
+    nbconvert>=7.14.0 \
+    nbformat>=5.9.0 \
+    # Development workflow
+    tox>=4.11.0 \
+    nox>=2023.4.22 \
+    # Git hooks and workflow
+    gitpython>=3.1.40 \
+    # Environment management
+    python-decouple>=3.8 \
+    # Monitoring and logging
+    structlog>=23.2.0 \
+    loguru>=0.7.2
+
+# Copy entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create comprehensive directory structure
+RUN mkdir -p \
+    data/genomes \
+    data/chembl \
+    logs \
+    reports \
+    coverage \
+    .pytest_cache \
+    .mypy_cache \
+    .hypothesis \
+    notebooks/examples \
+    notebooks/analysis \
+    notebooks/development \
+    scripts/dev \
+    tests/reports \
+    docs/build \
+    docker/ssl
+
+# Setup development environment configuration
+RUN conda run -n $CONDA_ENV_NAME python - << 'PY'
+import json
+
+# Create development configuration
+dev_config = {
+    "hot_reload": True,
+    "debug_mode": True,
+    "auto_test": True,
+    "coverage_reporting": True,
+    "performance_profiling": True,
+    "security_scanning": True,
+    "code_quality_checks": True,
+}
+
+with open("/app/.dev_config.json", "w", encoding="utf-8") as f:
+    json.dump(dev_config, f, indent=2)
+PY
+
+# Setup Jupyter configuration for enhanced development
+RUN conda run -n $CONDA_ENV_NAME jupyter lab --generate-config \
+    && echo "c.ServerApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.port = 8888" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.open_browser = False" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.allow_root = True" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.token = ''" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.password = ''" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.allow_origin = '*'" >> ~/.jupyter/jupyter_lab_config.py \
+    && echo "c.ServerApp.disable_check_xsrf = True" >> ~/.jupyter/jupyter_lab_config.py
+
+# Install JupyterLab extensions for enhanced development
+RUN conda run -n $CONDA_ENV_NAME jupyter labextension install --no-build \
+    @jupyter-widgets/jupyterlab-manager \
+    && conda run -n $CONDA_ENV_NAME jupyter lab build --dev-build=False --minimize=False
+
+# Setup git configuration for development
+RUN git config --global init.defaultBranch main \
+    && git config --global user.name "SynthaTrial Developer" \
+    && git config --global user.email "dev@synthatrial.local" \
+    && git config --global core.editor "vim" \
+    && git config --global pull.rebase false
+
+# Create development scripts
+RUN echo '#!/bin/bash\n\
+# Hot reload script for SynthaTrial development\n\
+echo "Starting hot reload development server..."\n\
+conda run -n synthatrial watchmedo auto-restart \\\n\
+    --patterns="*.py;*.yaml;*.yml;*.json;*.toml" \\\n\
+    --recursive \\\n\
+    --directory="/app" \\\n\
+    -- streamlit run app.py --server.headless true --server.port 8501\n\
+' > /usr/local/bin/hot-reload.sh && chmod +x /usr/local/bin/hot-reload.sh
+
+RUN echo '#!/bin/bash\n\
+# Comprehensive test runner with reporting\n\
+echo "Running comprehensive test suite..."\n\
+cd /app\n\
+conda run -n synthatrial pytest \\\n\
+    --cov=src \\\n\
+    --cov-report=html:coverage/html \\\n\
+    --cov-report=xml:coverage/coverage.xml \\\n\
+    --cov-report=term-missing \\\n\
+    --html=tests/reports/report.html \\\n\
+    --self-contained-html \\\n\
+    --json-report --json-report-file=tests/reports/report.json \\\n\
+    --benchmark-json=tests/reports/benchmark.json \\\n\
+    --timeout=300 \\\n\
+    -v \\\n\
+    "$@"\n\
+' > /usr/local/bin/run-tests.sh && chmod +x /usr/local/bin/run-tests.sh
+
+RUN echo '#!/bin/bash\n\
+# Code quality checker\n\
+echo "Running code quality checks..."\n\
+cd /app\n\
+echo "=== Black formatting ==="\n\
+conda run -n synthatrial black --check --diff src/ tests/ || true\n\
+echo "=== isort import sorting ==="\n\
+conda run -n synthatrial isort --check-only --diff src/ tests/ || true\n\
+echo "=== flake8 linting ==="\n\
+conda run -n synthatrial flake8 src/ tests/ || true\n\
+echo "=== mypy type checking ==="\n\
+conda run -n synthatrial mypy src/ || true\n\
+echo "=== bandit security scanning ==="\n\
+conda run -n synthatrial bandit -r src/ || true\n\
+echo "=== safety dependency scanning ==="\n\
+conda run -n synthatrial safety check || true\n\
+' > /usr/local/bin/quality-check.sh && chmod +x /usr/local/bin/quality-check.sh
+
+RUN echo '#!/bin/bash\n\
+# Development environment validator\n\
+echo "Validating development environment..."\n\
+cd /app\n\
+\n\
+# Check Python environment\n\
+echo "=== Python Environment ==="\n\
+conda run -n synthatrial python --version\n\
+conda run -n synthatrial pip list | grep -E "(pytest|black|isort|flake8|mypy|bandit)"\n\
+\n\
+# Check development tools\n\
+echo "=== Development Tools ==="\n\
+which git && git --version\n\
+which node && node --version\n\
+which npm && npm --version\n\
+\n\
+# Check file watchers\n\
+echo "=== File Watchers ==="\n\
+which inotifywait && echo "inotify-tools: OK"\n\
+conda run -n synthatrial python -c "import watchdog; print(f\"watchdog: {watchdog.__version__}\")" 2>/dev/null || echo "watchdog: MISSING"\n\
+\n\
+# Check Jupyter\n\
+echo "=== Jupyter Environment ==="\n\
+conda run -n synthatrial jupyter --version\n\
+conda run -n synthatrial jupyter labextension list\n\
+\n\
+# Check pre-commit\n\
+echo "=== Pre-commit Hooks ==="\n\
+if [ -f ".pre-commit-config.yaml" ]; then\n\
+    conda run -n synthatrial pre-commit --version\n\
+    echo "Pre-commit config found"\n\
+else\n\
+    echo "Pre-commit config missing"\n\
+fi\n\
+\n\
+echo "=== Environment Validation Complete ==="\n\
+' > /usr/local/bin/validate-env.sh && chmod +x /usr/local/bin/validate-env.sh
+
+RUN echo '#!/bin/bash\n\
+# Performance profiler\n\
+echo "Starting performance profiling..."\n\
+cd /app\n\
+if [ "$1" = "line" ]; then\n\
+    conda run -n synthatrial kernprof -l -v "$2"\n\
+elif [ "$1" = "memory" ]; then\n\
+    conda run -n synthatrial python -m memory_profiler "$2"\n\
+elif [ "$1" = "spy" ]; then\n\
+    conda run -n synthatrial py-spy top --pid "$2"\n\
+else\n\
+    echo "Usage: profile.sh [line|memory|spy] <script_or_pid>"\n\
+    echo "  line: Line-by-line profiling with line_profiler"\n\
+    echo "  memory: Memory profiling with memory_profiler"\n\
+    echo "  spy: Real-time profiling with py-spy"\n\
+fi\n\
+' > /usr/local/bin/profile.sh && chmod +x /usr/local/bin/profile.sh
+
+# Setup shell enhancements for better development experience
+RUN echo 'alias ll="ls -la"' >> ~/.bashrc \
+    && echo 'alias la="ls -A"' >> ~/.bashrc \
+    && echo 'alias l="ls -CF"' >> ~/.bashrc \
+    && echo 'alias ..="cd .."' >> ~/.bashrc \
+    && echo 'alias ...="cd ../.."' >> ~/.bashrc \
+    && echo 'alias grep="grep --color=auto"' >> ~/.bashrc \
+    && echo 'alias fgrep="fgrep --color=auto"' >> ~/.bashrc \
+    && echo 'alias egrep="egrep --color=auto"' >> ~/.bashrc \
+    && echo 'export PS1="\[\033[01;32m\]\u@synthatrial-dev\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "' >> ~/.bashrc \
+    && echo 'export EDITOR=vim' >> ~/.bashrc \
+    && echo 'export PYTHONPATH=/app:$PYTHONPATH' >> ~/.bashrc
+
+# Create development health check script
+RUN echo '#!/bin/bash\n\
+# Development environment health check\n\
+cd /app\n\
+\n\
+# Check if conda environment is active\n\
+if conda info --envs | grep -q "synthatrial.*\\*"; then\n\
+    echo "✓ Conda environment active"\n\
+else\n\
+    echo "✗ Conda environment not active"\n\
+    exit 1\n\
+fi\n\
+\n\
+# Check if Python can import core modules\n\
+conda run -n synthatrial python -c "import src.input_processor, src.vector_search, src.agent_engine" 2>/dev/null\n\
+if [ $? -eq 0 ]; then\n\
+    echo "✓ Core modules importable"\n\
+else\n\
+    echo "✗ Core modules import failed"\n\
+    exit 1\n\
+fi\n\
+\n\
+# Check if development tools are available\n\
+conda run -n synthatrial python -c "import pytest, black, isort, flake8" 2>/dev/null\n\
+if [ $? -eq 0 ]; then\n\
+    echo "✓ Development tools available"\n\
+else\n\
+    echo "✗ Development tools missing"\n\
+    exit 1\n\
+fi\n\
+\n\
+echo "✓ Development environment healthy"\n\
+' > /usr/local/bin/health-check.sh && chmod +x /usr/local/bin/health-check.sh
+
+# Set proper permissions for development
+RUN chmod -R 755 /app \
+    && chown -R root:root /app
+
+# Expose ports for development services
+EXPOSE 8501 8888 8000 3000 5000
+
+# Set health check for development environment
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD /usr/local/bin/health-check.sh
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Default command for development
+CMD ["dev"]

@@ -1,0 +1,18 @@
+{
+  "cpu_threshold": 80.0,
+  "memory_threshold": 85.0,
+  "disk_threshold": 90.0,
+  "container_restart_threshold": 3,
+  "response_time_threshold": 5.0,
+  "email_enabled": false,
+  "email_smtp_server": "smtp.gmail.com",
+  "email_smtp_port": 587,
+  "email_username": "your-email@example.com",
+  "email_password": "your-app-password",
+  "email_recipients": [
+    "admin@example.com",
+    "devops@example.com"
+  ],
+  "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+  "check_interval": 60
+}

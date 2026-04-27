@@ -1,0 +1,14 @@
+{
+  "_source": "CPIC CYP3A4 phenotype assignments (PharmVar/CPIC)",
+  "_cpic_level": "A/B",
+  "_genes": ["CYP3A4"],
+  "*1/*1": "Normal Metabolizer",
+  "*1/*22": "Intermediate Metabolizer",
+  "*22/*22": "Poor Metabolizer",
+  "*1/*2": "Intermediate Metabolizer",
+  "*1/*4": "Intermediate Metabolizer",
+  "*1/*5": "Intermediate Metabolizer",
+  "*1/*17": "Rapid Metabolizer",
+  "*2/*2": "Poor Metabolizer",
+  "*4/*4": "Poor Metabolizer"
+}

@@ -1,0 +1,20 @@
+{
+  "_source": "CPIC Guideline for efavirenz and CYP2B6 (PMID: 29034817, updated 2021)",
+  "_cpic_level": "A",
+  "_genes": ["CYP2B6"],
+  "_equity_note": "CYP2B6*6 and *18 are significantly more prevalent in African populations (AFR *6 frequency ~50%), making this gene critical for equity-aware HIV pharmacogenomics.",
+  "*1/*1": "Normal Metabolizer",
+  "*1/*4": "Normal Metabolizer",
+  "*1/*5": "Intermediate Metabolizer",
+  "*1/*6": "Intermediate Metabolizer",
+  "*1/*9": "Intermediate Metabolizer",
+  "*1/*18": "Intermediate Metabolizer",
+  "*4/*4": "Rapid Metabolizer",
+  "*4/*6": "Intermediate Metabolizer",
+  "*5/*5": "Poor Metabolizer",
+  "*6/*6": "Poor Metabolizer",
+  "*6/*18": "Poor Metabolizer",
+  "*18/*18": "Poor Metabolizer",
+  "*6/*9": "Poor Metabolizer",
+  "*9/*9": "Intermediate Metabolizer"
+}

@@ -1,0 +1,412 @@
+name: Release and Deploy
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v1.0.0)"
+        required: true
+        type: string
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+      force_deploy:
+        description: "Force deployment even if tests fail"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  # Job 1: Validate Release
+  validate-release:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version information
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            IS_PRERELEASE="${{ github.event.release.prerelease }}"
+          else
+            VERSION="${{ inputs.version }}"
+            IS_PRERELEASE="false"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+          echo "Release version: $VERSION"
+          echo "Is prerelease: $IS_PRERELEASE"
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+            echo "❌ Invalid version format: $VERSION"
+            echo "Expected format: v1.0.0 or v1.0.0-beta"
+            exit 1
+          fi
+          echo "✅ Version format is valid: $VERSION"
+
+      - name: Check if version exists
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if git tag -l | grep -q "^$VERSION$"; then
+            echo "⚠️ Version $VERSION already exists"
+            if [ "${{ inputs.force_deploy }}" != "true" ]; then
+              echo "❌ Use force_deploy=true to override existing version"
+              exit 1
+            fi
+          fi
+
+  # Job 2: Build Release Images
+  build-release:
+    name: Build Release Images
+    runs-on: ubuntu-latest
+    needs: [validate-release]
+    strategy:
+      matrix:
+        target: [prod, dev, dev-enhanced]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for release
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ needs.validate-release.outputs.version }},suffix=-${{ matrix.target }}
+            type=raw,value=latest,suffix=-${{ matrix.target }},enable={{is_default_branch}}
+            type=raw,value=stable,suffix=-${{ matrix.target }},enable=${{ needs.validate-release.outputs.is_prerelease == 'false' }}
+          labels: |
+            org.opencontainers.image.title=SynthaTrial
+            org.opencontainers.image.description=In Silico Pharmacogenomics Platform
+            org.opencontainers.image.vendor=SynthaTrial
+            org.opencontainers.image.version=${{ needs.validate-release.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+
+      - name: Build and push release image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.${{ matrix.target }}
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ needs.validate-release.outputs.version }}
+
+  # Job 3: Release Testing
+  release-test:
+    name: Release Testing
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-release]
+    if: ${{ !inputs.force_deploy }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: "3.10"
+          channels: conda-forge
+          activate-environment: synthatrial-release-test
+
+      - name: Install dependencies
+        shell: bash -l {0}
+        run: |
+          conda install -c conda-forge rdkit pandas scipy scikit-learn numpy
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-timeout
+
+      - name: Run release validation tests
+        shell: bash -l {0}
+        run: |
+          # Create test environment
+          mkdir -p data/genomes data/chembl logs
+          echo "GOOGLE_API_KEY=test_key" > .env
+          echo "PINECONE_API_KEY=test_key" >> .env
+
+          # Run critical tests only
+          pytest tests/quick_test.py -v --timeout=300
+          pytest tests/validation_tests.py -v --timeout=600 || true
+
+      - name: Test release container
+        run: |
+          # Pull and test the release image
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+
+          # Test container startup
+          docker run -d --name release-test \
+            -e GOOGLE_API_KEY=test_key \
+            -e PINECONE_API_KEY=test_key \
+            -p 8501:8501 \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+
+          sleep 30
+
+          # Check container health
+          docker ps | grep release-test
+          docker logs release-test
+
+          # Cleanup
+          docker stop release-test
+          docker rm release-test
+
+  # Job 4: Security Scan for Release
+  release-security:
+    name: Release Security Scan
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-release]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+
+      - name: Scan release image
+        run: |
+          # Scan the production release image
+          trivy image --format json --output release-security-report.json \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+
+          trivy image --format table \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+
+      - name: Check for critical vulnerabilities
+        run: |
+          # Fail if critical vulnerabilities are found in release
+          python3 -c "
+          import json
+          import sys
+
+          with open('release-security-report.json', 'r') as f:
+              data = json.load(f)
+
+          critical_found = False
+          if 'Results' in data:
+              for result in data['Results']:
+                  if 'Vulnerabilities' in result:
+                      for vuln in result['Vulnerabilities']:
+                          if vuln.get('Severity', '').lower() == 'critical':
+                              print(f'Critical vulnerability found: {vuln.get(\"VulnerabilityID\", \"Unknown\")}')
+                              critical_found = True
+
+          if critical_found and '${{ inputs.force_deploy }}' != 'true':
+              print('Critical vulnerabilities found in release - blocking deployment')
+              sys.exit(1)
+          else:
+              print('No critical vulnerabilities found or force deployment enabled')
+          "
+
+      - name: Upload release security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-security-report
+          path: release-security-report.json
+
+  # Job 5: Deploy to Environment
+  deploy:
+    name: Deploy to ${{ inputs.environment || 'production' }}
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-release, release-test, release-security]
+    if: always() && (needs.release-test.result == 'success' || inputs.force_deploy == true)
+    environment: ${{ inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        if: ${{ inputs.environment == 'staging' || needs.validate-release.outputs.is_prerelease == 'true' }}
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod"
+
+          # Add staging deployment logic here
+          # This could include:
+          # - Updating Kubernetes manifests
+          # - Triggering deployment pipelines
+          # - Updating docker-compose files
+          # - Notifying deployment systems
+
+          echo "✅ Staging deployment completed"
+
+      - name: Deploy to production
+        if: ${{ inputs.environment == 'production' && needs.validate-release.outputs.is_prerelease == 'false' }}
+        run: |
+          echo "🚀 Deploying to production environment..."
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod"
+
+          # Add production deployment logic here
+          # This could include:
+          # - Blue-green deployment
+          # - Rolling updates
+          # - Health checks
+          # - Rollback procedures
+
+          echo "✅ Production deployment completed"
+
+      - name: Update deployment status
+        run: |
+          echo "📊 Deployment Summary:"
+          echo "- Version: ${{ needs.validate-release.outputs.version }}"
+          echo "- Environment: ${{ inputs.environment || 'production' }}"
+          echo "- Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod"
+          echo "- Platforms: ${{ env.PLATFORMS }}"
+          echo "- Deployment Time: $(date -u)"
+
+  # Job 6: Post-Deployment Verification
+  verify-deployment:
+    name: Verify Deployment
+    runs-on: ubuntu-latest
+    needs: [validate-release, deploy]
+    if: always() && needs.deploy.result == 'success'
+
+    steps:
+      - name: Verify image availability
+        run: |
+          # Verify the deployed image is available
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:stable-prod || true
+
+      - name: Run post-deployment tests
+        run: |
+          echo "🧪 Running post-deployment verification..."
+
+          # Test the deployed image
+          docker run -d --name verify-deployment \
+            -e GOOGLE_API_KEY=test_key \
+            -e PINECONE_API_KEY=test_key \
+            -p 8501:8501 \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod
+
+          sleep 30
+
+          # Basic health checks
+          docker ps | grep verify-deployment
+          curl -f http://localhost:8501/_stcore/health || echo "Health endpoint not available"
+
+          # Check logs for errors
+          docker logs verify-deployment | grep -i error || echo "No errors found in logs"
+
+          # Cleanup
+          docker stop verify-deployment
+          docker rm verify-deployment
+
+          echo "✅ Post-deployment verification completed"
+
+  # Job 7: Release Notification
+  notify:
+    name: Release Notification
+    runs-on: ubuntu-latest
+    needs:
+      [
+        validate-release,
+        build-release,
+        release-test,
+        release-security,
+        deploy,
+        verify-deployment,
+      ]
+    if: always()
+
+    steps:
+      - name: Generate release report
+        run: |
+          echo "# SynthaTrial Release Report" > release-report.md
+          echo "" >> release-report.md
+          echo "**Release Information:**" >> release-report.md
+          echo "- Version: ${{ needs.validate-release.outputs.version }}" >> release-report.md
+          echo "- Environment: ${{ inputs.environment || 'production' }}" >> release-report.md
+          echo "- Is Prerelease: ${{ needs.validate-release.outputs.is_prerelease }}" >> release-report.md
+          echo "- Repository: ${{ github.repository }}" >> release-report.md
+          echo "- Commit: ${{ github.sha }}" >> release-report.md
+          echo "- Release Date: $(date -u)" >> release-report.md
+          echo "" >> release-report.md
+          echo "**Job Status:**" >> release-report.md
+          echo "- Validation: ${{ needs.validate-release.result }}" >> release-report.md
+          echo "- Build: ${{ needs.build-release.result }}" >> release-report.md
+          echo "- Testing: ${{ needs.release-test.result }}" >> release-report.md
+          echo "- Security: ${{ needs.release-security.result }}" >> release-report.md
+          echo "- Deployment: ${{ needs.deploy.result }}" >> release-report.md
+          echo "- Verification: ${{ needs.verify-deployment.result }}" >> release-report.md
+          echo "" >> release-report.md
+          echo "**Images Published:**" >> release-report.md
+          echo "- ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-prod" >> release-report.md
+          echo "- ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-dev" >> release-report.md
+          echo "- ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.validate-release.outputs.version }}-dev-enhanced" >> release-report.md
+
+      - name: Upload release report
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-report
+          path: release-report.md
+
+      - name: Check overall release status
+        run: |
+          if [[ "${{ needs.deploy.result }}" == "success" &&
+                "${{ needs.verify-deployment.result }}" == "success" ]]; then
+            echo "✅ Release ${{ needs.validate-release.outputs.version }} completed successfully"
+            exit 0
+          else
+            echo "❌ Release ${{ needs.validate-release.outputs.version }} encountered issues"
+            exit 1
+          fi

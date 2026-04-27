@@ -1,0 +1,89 @@
+# ---------------------------
+# Git
+# ---------------------------
+.git
+.gitignore
+
+# ---------------------------
+# Python cache / build files
+# ---------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+
+# ---------------------------
+# Virtual environments
+# ---------------------------
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# ---------------------------
+# Jupyter
+# ---------------------------
+.ipynb_checkpoints/
+
+# ---------------------------
+# IDE files
+# ---------------------------
+.idea/
+.vscode/
+.kiro/
+
+# ---------------------------
+# OS files
+# ---------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*~
+
+# ---------------------------
+# Logs
+# ---------------------------
+logs/
+*.log
+
+# ---------------------------
+# Environment files
+# ---------------------------
+.env
+.env.*
+.python-version
+Pipfile.lock
+
+# ---------------------------
+# LARGE DATA FILES (CRITICAL)
+# These are mounted as volumes,
+# NOT copied into Docker image
+# ---------------------------
+data/genomes/
+data/chembl/
+*.vcf.gz
+*.tbi
+*.db
+*.tar.gz
+
+# ---------------------------
+# Temporary files
+# ---------------------------
+*.tmp
+*.temp
+*.swp
+*.swo

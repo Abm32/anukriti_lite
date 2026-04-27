@@ -1,0 +1,16 @@
+{
+  "rs4149056": {
+    "TT": {
+      "phenotype": "Normal Function",
+      "risk": "Low myopathy risk"
+    },
+    "TC": {
+      "phenotype": "Decreased Function",
+      "risk": "Moderate myopathy risk"
+    },
+    "CC": {
+      "phenotype": "Poor Function",
+      "risk": "High myopathy risk"
+    }
+  }
+}

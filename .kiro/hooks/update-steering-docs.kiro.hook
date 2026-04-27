@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Update Steering Docs",
+  "description": "Automatically prompts the agent to review and update steering documentation (tech.md, product.md, structure.md) when agent execution completes, ensuring documentation stays current with project changes",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the recent changes and update the steering documentation files (.kiro/steering/tech.md, .kiro/steering/product.md, .kiro/steering/structure.md) if any updates are needed to reflect new dependencies, architecture changes, or functionality modifications. Focus on keeping the technical stack, project structure, and product overview accurate and current."
+  },
+  "workspaceFolderName": "SynthaTrial-repo",
+  "shortName": "update-steering-docs"
+}

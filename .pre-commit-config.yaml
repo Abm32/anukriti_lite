@@ -1,0 +1,195 @@
+# Pre-commit hooks configuration for SynthaTrial
+# Ensures code quality, formatting, and security checks before commits
+
+repos:
+  # Code formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3.10
+        args: [--line-length=88]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+  # Import sorting with isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=88]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+  # Linting with flake8
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args:
+          [
+            "--max-line-length=88",
+            "--extend-ignore=E203,W503,E501,E402,E722,F401,F841,F541,F811",
+          ]
+        files: ^(src/|tests/)
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+  # Type checking with mypy (src + main + api only so commit passes)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML, pandas]
+        args: [--ignore-missing-imports, --no-strict-optional]
+        files: ^(src/|main\.py|api\.py)
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/|tests/)
+
+  # Security scanning with bandit
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        additional_dependencies: [pbr]
+        args:
+          [
+            -r,
+            --skip=B101,
+            B104,
+            B103,
+            B106,
+            B108,
+            B110,
+            B310,
+            B324,
+            B403,
+            B404,
+            B601,
+            B603,
+            B607,
+            B311,
+            B112,
+          ]
+        files: ^(src/|main\.py|api\.py)
+        exclude: ^(tests/|data/|logs/|\.hypothesis/|\.pytest_cache/|examples/)
+
+  # General code quality checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Basic file checks
+      - id: trailing-whitespace
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: end-of-file-fixer
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/|slco1b1_cpic_pack_v0_5/)
+      - id: check-yaml
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: check-json
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: check-toml
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+      # Python-specific checks
+      - id: check-ast
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: check-docstring-first
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: debug-statements
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: name-tests-test
+        args: [--pytest-test-first]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/|tests/(quick_test|validation_tests)\.py)$
+
+      # Security checks
+      - id: detect-private-key
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: check-merge-conflict
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+      # File size and encoding checks
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: check-case-conflict
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+      - id: mixed-line-ending
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+  # Docker-specific checks
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args:
+          [
+            --ignore=DL3008,
+            --ignore=DL3009,
+            --ignore=DL3007,
+            --ignore=DL3015,
+            --ignore=DL3059,
+            --ignore=SC2239,
+            --ignore=SC2086,
+          ]
+        exclude: ^docker/Dockerfile\.dev-enhanced$
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        args: [-e, SC1091, -e, SC2034, -e, SC2239]
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args:
+          [
+            --disable=MD013,
+            MD033,
+            MD041,
+            MD022,
+            MD032,
+            MD031,
+            MD040,
+            MD034,
+            MD036,
+            MD037,
+            MD024,
+            MD025,
+            MD001,
+          ]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/|\.github/|\.kiro/|docker/|README\.md|docs/)
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types: [yaml]
+        exclude: ^(data/|logs/|\.hypothesis/|\.pytest_cache/)
+
+# Configuration for specific tools
+default_language_version:
+  python: python3.10
+
+# Exclude patterns for all hooks
+exclude: |
+  (?x)^(
+    data/.*|
+    logs/.*|
+    \.hypothesis/.*|
+    \.pytest_cache/.*|
+    \.git/.*|
+    .*\.vcf\.gz|
+    .*\.db|
+    .*\.sqlite|
+    .*\.pdf|
+    .*\.png|
+    .*\.jpg|
+    .*\.jpeg
+  )$
+
+# Fail fast - stop on first failure
+fail_fast: false
+
+# Minimum pre-commit version
+minimum_pre_commit_version: 3.0.0

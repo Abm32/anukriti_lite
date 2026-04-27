@@ -1,0 +1,17 @@
+{
+  "simvastatin": {
+    "Normal Function": "Standard dosing acceptable",
+    "Decreased Function": "Consider lower dose or alternate statin",
+    "Poor Function": "Avoid high-dose simvastatin; choose alternative"
+  },
+  "atorvastatin": {
+    "Normal Function": "Standard dosing acceptable",
+    "Decreased Function": "Dose caution; monitor for muscle toxicity",
+    "Poor Function": "Consider alternate statin or reduced dose"
+  },
+  "rosuvastatin": {
+    "Normal Function": "Standard dosing acceptable",
+    "Decreased Function": "Dose reduction may be needed",
+    "Poor Function": "Lower starting dose recommended"
+  }
+}

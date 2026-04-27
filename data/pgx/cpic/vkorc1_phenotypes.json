@@ -1,0 +1,9 @@
+{
+  "_source": "CPIC Guideline for Warfarin and CYP2C9/VKORC1 (Johnson et al. 2017 update)",
+  "_version": "2024-01",
+  "_note": "VKORC1 rs9923231 (-1639G>A). GG=normal sensitivity, GA=intermediate, AA=high sensitivity (lower warfarin dose). This is a single-locus genotype, not star allele notation.",
+  "GG": "Normal Sensitivity",
+  "GA": "Intermediate Sensitivity",
+  "AG": "Intermediate Sensitivity",
+  "AA": "High Sensitivity"
+}

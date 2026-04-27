@@ -1,0 +1,15 @@
+{
+  "_source": "CPIC Guideline for tacrolimus and CYP3A5 (PMID: 25801146, updated 2021)",
+  "_cpic_level": "A",
+  "_genes": ["CYP3A5"],
+  "*1/*1": "Rapid Metabolizer",
+  "*1/*3": "Intermediate Metabolizer",
+  "*1/*6": "Intermediate Metabolizer",
+  "*1/*7": "Intermediate Metabolizer",
+  "*3/*3": "Poor Metabolizer",
+  "*3/*6": "Poor Metabolizer",
+  "*3/*7": "Poor Metabolizer",
+  "*6/*6": "Poor Metabolizer",
+  "*6/*7": "Poor Metabolizer",
+  "*7/*7": "Poor Metabolizer"
+}

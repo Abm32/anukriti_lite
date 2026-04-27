@@ -1,0 +1,19 @@
+{
+  "_source": "CPIC Guideline for UGT1A1 and Atazanavir/Irinotecan (Gammal et al. 2016, 2019 update)",
+  "_version": "2024-01",
+  "_note": "UGT1A1*28 = (TA)7 promoter repeat (reduced expression). UGT1A1*6 = G71R missense (reduced function). Both common in East Asian populations.",
+  "*1/*1": "Normal Metabolizer",
+  "*1/*28": "Intermediate Metabolizer",
+  "*1/*6": "Intermediate Metabolizer",
+  "*1/*37": "Intermediate Metabolizer",
+  "*28/*28": "Poor Metabolizer",
+  "*6/*6": "Poor Metabolizer",
+  "*6/*28": "Poor Metabolizer",
+  "*28/*37": "Poor Metabolizer",
+  "*37/*37": "Poor Metabolizer",
+  "*6/*37": "Poor Metabolizer",
+  "*36/*1": "Normal Metabolizer",
+  "*36/*28": "Intermediate Metabolizer",
+  "*36/*6": "Intermediate Metabolizer",
+  "*36/*36": "Normal Metabolizer"
+}

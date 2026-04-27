@@ -1,0 +1,21 @@
+{
+  "_source": "PharmGKB/CPIC GSTM1/GSTT1 drug guidelines",
+  "_cpic_level": "B",
+  "busulfan": {
+    "Normal Function": "Standard busulfan dosing for conditioning regimen. Use targeted AUC-based dosing with therapeutic drug monitoring.",
+    "Intermediate Function": "Standard dosing with TDM. Moderately reduced detoxification capacity.",
+    "No Function (Null Genotype)": "Reduced detoxification of busulfan metabolites. Associated with increased risk of sinusoidal obstruction syndrome (SOS/VOD) in HSCT conditioning. Consider dose reduction or alternative conditioning. Aggressive TDM recommended."
+  },
+  "oxaliplatin": {
+    "Normal Function": "Standard oxaliplatin dosing per protocol. Standard detoxification of platinum metabolites.",
+    "No Function (Null Genotype)": "GSTM1 null associated with reduced platinum detoxification and increased neurotoxicity risk. Monitor for peripheral neuropathy. Some data suggest improved response in colorectal cancer (reduced drug inactivation) — risk-benefit discussion warranted."
+  },
+  "cisplatin": {
+    "Normal Function": "Standard cisplatin dosing. Normal glutathione conjugation of platinum.",
+    "No Function (Null Genotype)": "GSTT1 null associated with increased ototoxicity risk in pediatric patients. Audiologic monitoring essential. GSTM1 null may correlate with improved tumor response but increased nephrotoxicity."
+  },
+  "cyclophosphamide": {
+    "Normal Function": "Standard cyclophosphamide dosing.",
+    "No Function (Null Genotype)": "GSTM1/GSTT1 null associated with altered cyclophosphamide metabolism. Increased acrolein accumulation risk (hemorrhagic cystitis). Ensure adequate mesna prophylaxis."
+  }
+}

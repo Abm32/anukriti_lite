@@ -1,0 +1,19 @@
+{
+  "_source": "CPIC Guideline for Fluoropyrimidines and DPYD (2017, 2024 update)",
+  "_version": "2024-01",
+  "fluorouracil": {
+    "Normal Metabolizer": "Standard dose per protocol. Monitor for toxicity per routine clinical practice.",
+    "Intermediate Metabolizer": "Reduce starting dose by 50%. Titrate dose based on toxicity or pharmacokinetic testing. Monitor closely.",
+    "Poor Metabolizer": "Avoid use of fluorouracil. Select alternative agent. If fluoropyrimidine is the only option, use greatly reduced dose with therapeutic drug monitoring."
+  },
+  "capecitabine": {
+    "Normal Metabolizer": "Standard dose per protocol. Monitor for toxicity per routine clinical practice.",
+    "Intermediate Metabolizer": "Reduce starting dose by 50%. Titrate dose based on toxicity. Monitor closely for hand-foot syndrome and myelosuppression.",
+    "Poor Metabolizer": "Avoid use of capecitabine. Select alternative agent. If fluoropyrimidine is the only option, use greatly reduced dose with therapeutic drug monitoring."
+  },
+  "tegafur": {
+    "Normal Metabolizer": "Standard dose per protocol.",
+    "Intermediate Metabolizer": "Reduce starting dose by 50%. Monitor closely for toxicity.",
+    "Poor Metabolizer": "Avoid use. Select alternative agent."
+  }
+}

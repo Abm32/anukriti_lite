@@ -1,0 +1,155 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with SynthaTrial
+title: "[Bug]: "
+labels: ["type: bug", "status: needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below to help us diagnose and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: A clear and concise description of what actually happened.
+      placeholder: What actually happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Docker/Containerization
+        - CI/CD Pipeline
+        - Web Interface (Streamlit)
+        - Core Algorithm
+        - VCF Processing
+        - Security
+        - Documentation
+        - Testing
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where did this bug occur?
+      options:
+        - Local Development
+        - Docker Container
+        - Production Deployment
+        - CI/CD Pipeline
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System Information
+      description: Please provide system information
+      placeholder: |
+        - OS: [e.g., Ubuntu 20.04, macOS 12.0, Windows 11]
+        - Docker Version: [e.g., 20.10.17]
+        - Python Version: [e.g., 3.10.6]
+        - Browser: [e.g., Chrome 104, Firefox 103] (if web interface issue)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and Error Messages
+      description: Please paste any relevant logs or error messages
+      placeholder: |
+        Paste logs here...
+
+        For Docker issues, include:
+        - docker logs <container-name>
+        - docker-compose logs
+
+        For CI/CD issues, include:
+        - GitHub Actions workflow logs
+        - Build output
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      placeholder: Drag and drop screenshots here or paste image URLs
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How critical is this bug?
+      options:
+        - Low - Minor issue, workaround available
+        - Medium - Affects functionality but not critical
+        - High - Significant impact on functionality
+        - Critical - System unusable or security issue
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm you have completed these steps
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided all requested information above
+          required: true
+        - label: I have tested this on the latest version
+          required: true
+        - label: I have included relevant logs and error messages
+          required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here.
+      placeholder: Any additional information that might be helpful...

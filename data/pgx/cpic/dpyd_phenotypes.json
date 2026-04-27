@@ -1,0 +1,19 @@
+{
+  "_source": "CPIC Guideline for Fluoropyrimidines and DPYD (2017, 2024 update)",
+  "_version": "2024-01",
+  "*1/*1": "Normal Metabolizer",
+  "*1/*2A": "Intermediate Metabolizer",
+  "*1/*13": "Intermediate Metabolizer",
+  "*1/c.2846A>T": "Intermediate Metabolizer",
+  "*1/HapB3": "Intermediate Metabolizer",
+  "*2A/*2A": "Poor Metabolizer",
+  "*2A/*13": "Poor Metabolizer",
+  "*2A/c.2846A>T": "Poor Metabolizer",
+  "*2A/HapB3": "Poor Metabolizer",
+  "*13/*13": "Poor Metabolizer",
+  "*13/c.2846A>T": "Poor Metabolizer",
+  "*13/HapB3": "Poor Metabolizer",
+  "c.2846A>T/c.2846A>T": "Poor Metabolizer",
+  "c.2846A>T/HapB3": "Poor Metabolizer",
+  "HapB3/HapB3": "Intermediate Metabolizer"
+}

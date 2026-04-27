@@ -1,0 +1,19 @@
+{
+  "_source": "CPIC Guideline for Thiopurines and TPMT (2018 update)",
+  "_version": "2024-01",
+  "azathioprine": {
+    "Normal Metabolizer": "Standard starting dose. Monitor for myelosuppression.",
+    "Intermediate Metabolizer": "Reduce dose by 30-70%. Start at 30-70% of target dose. Monitor closely for myelosuppression.",
+    "Poor Metabolizer": "Consider alternative agent or drastically reduce dose (10% of standard). If thiopurine is used, start at drastically reduced dose (10 mg/m2/day) and monitor weekly."
+  },
+  "mercaptopurine": {
+    "Normal Metabolizer": "Standard starting dose. Monitor for myelosuppression.",
+    "Intermediate Metabolizer": "Reduce dose by 30-70%. Start at 30-70% of target dose. Monitor closely for myelosuppression.",
+    "Poor Metabolizer": "Consider alternative agent or drastically reduce dose (10% of standard). If thiopurine is used, start at drastically reduced dose and monitor weekly."
+  },
+  "thioguanine": {
+    "Normal Metabolizer": "Standard starting dose. Monitor for myelosuppression.",
+    "Intermediate Metabolizer": "Reduce dose by 30-70%. Monitor closely for myelosuppression.",
+    "Poor Metabolizer": "Consider alternative agent or drastically reduce dose. Monitor weekly for myelosuppression."
+  }
+}

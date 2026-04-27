@@ -1,0 +1,17 @@
+[
+  {
+    "drug": "simvastatin",
+    "genotype": "TT",
+    "expected": "Standard dosing acceptable"
+  },
+  {
+    "drug": "simvastatin",
+    "genotype": "TC",
+    "expected": "Consider lower dose or alternate statin"
+  },
+  {
+    "drug": "simvastatin",
+    "genotype": "CC",
+    "expected": "Avoid high-dose simvastatin; choose alternative"
+  }
+]

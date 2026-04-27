@@ -1,0 +1,868 @@
+{
+  "getrm_benchmark": {
+    "results": [
+      {
+        "gene": "CYP2D6",
+        "anukriti": {
+          "gene": "CYP2D6",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": null,
+          "Aldy": 0.886,
+          "Stargazer": 0.843
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 4,
+          "fp": 0,
+          "tn": 26,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      },
+      {
+        "gene": "CYP2C19",
+        "anukriti": {
+          "gene": "CYP2C19",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.967,
+          "Aldy": 0.986,
+          "Stargazer": 0.943
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 17,
+          "fp": 0,
+          "tn": 13,
+          "fn": 0
+        },
+        "runtime_seconds": 0.0
+      },
+      {
+        "gene": "CYP2C9",
+        "anukriti": {
+          "gene": "CYP2C9",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.957,
+          "Aldy": 0.986,
+          "Stargazer": 0.929
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 8,
+          "fp": 0,
+          "tn": 22,
+          "fn": 0
+        },
+        "runtime_seconds": 0.0
+      },
+      {
+        "gene": "UGT1A1",
+        "anukriti": {
+          "gene": "UGT1A1",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.957,
+          "Aldy": null,
+          "Stargazer": 0.914
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 13,
+          "fp": 0,
+          "tn": 17,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      },
+      {
+        "gene": "TPMT",
+        "anukriti": {
+          "gene": "TPMT",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.971,
+          "Aldy": 0.986,
+          "Stargazer": 0.957
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "tn": 25,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      },
+      {
+        "gene": "DPYD",
+        "anukriti": {
+          "gene": "DPYD",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.943,
+          "Aldy": 0.971,
+          "Stargazer": 0.914
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 2,
+          "fp": 0,
+          "tn": 28,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      },
+      {
+        "gene": "SLCO1B1",
+        "anukriti": {
+          "gene": "SLCO1B1",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.95,
+          "Aldy": 0.97,
+          "Stargazer": 0.93
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 1.0,
+          "ppv": 1.0,
+          "npv": 1.0,
+          "f1_score": 1.0,
+          "tp": 6,
+          "fp": 0,
+          "tn": 24,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      },
+      {
+        "gene": "VKORC1",
+        "anukriti": {
+          "gene": "VKORC1",
+          "tool": "Anukriti",
+          "total_samples": 30,
+          "concordant": 30,
+          "discordant": 0,
+          "no_call_test": 0,
+          "call_rate": 1.0,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "ci_95_low": 0.8865,
+          "ci_95_high": 1.0,
+          "mismatches": []
+        },
+        "published_concordance": {
+          "PharmCAT": 0.99,
+          "Aldy": null,
+          "Stargazer": null
+        },
+        "actionability_metrics": {
+          "sensitivity": 1.0,
+          "specificity": 0.0,
+          "ppv": 1.0,
+          "npv": 0.0,
+          "f1_score": 1.0,
+          "tp": 30,
+          "fp": 0,
+          "tn": 0,
+          "fn": 0
+        },
+        "runtime_seconds": 0.001
+      }
+    ],
+    "comparison_table": "\n=======================================================================================================\nPHARMACOGENOMICS TOOL COMPARISON BENCHMARK\nAnukriti vs. PharmCAT / Aldy / Stargazer\n(Published concordance from Halman et al. 2024, PMC11315677)\n=======================================================================================================\n\nGene          N   Anukriti           95% CI   PharmCAT       Aldy  Stargazer    Pheno     Sens     Spec\n-------------------------------------------------------------------------------------------------------\nCYP2D6       30     100.0%   (88.6%-100.0%)        N/A      88.6%      84.3%   100.0%   100.0%   100.0%\nCYP2C19      30     100.0%   (88.6%-100.0%)      96.7%      98.6%      94.3%   100.0%   100.0%   100.0%\nCYP2C9       30     100.0%   (88.6%-100.0%)      95.7%      98.6%      92.9%   100.0%   100.0%   100.0%\nUGT1A1       30     100.0%   (88.6%-100.0%)      95.7%        N/A      91.4%   100.0%   100.0%   100.0%\nTPMT         30     100.0%   (88.6%-100.0%)      97.1%      98.6%      95.7%   100.0%   100.0%   100.0%\nDPYD         30     100.0%   (88.6%-100.0%)      94.3%      97.1%      91.4%   100.0%   100.0%   100.0%\nSLCO1B1      30     100.0%   (88.6%-100.0%)      95.0%      97.0%      93.0%   100.0%   100.0%   100.0%\nVKORC1       30     100.0%   (88.6%-100.0%)      99.0%        N/A        N/A   100.0%   100.0%     0.0%\n-------------------------------------------------------------------------------------------------------\nOVERALL     240    100.0%\n\nNo mismatches detected.\n"
+  },
+  "expanded_validation": {
+    "CYP2C19": {
+      "gene": "CYP2C19",
+      "total_patients": 125,
+      "overall_diplotype_concordance": 1.0,
+      "overall_phenotype_concordance": 1.0,
+      "actionability": {
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "ppv": 1.0,
+        "npv": 1.0,
+        "f1_score": 1.0,
+        "tp": 64,
+        "fp": 0,
+        "tn": 61,
+        "fn": 0
+      },
+      "by_population": {
+        "AFR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "tn": 20,
+            "fn": 0
+          }
+        },
+        "AMR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 13,
+            "fp": 0,
+            "tn": 12,
+            "fn": 0
+          }
+        },
+        "EAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 17,
+            "fp": 0,
+            "tn": 8,
+            "fn": 0
+          }
+        },
+        "EUR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 15,
+            "fp": 0,
+            "tn": 10,
+            "fn": 0
+          }
+        },
+        "SAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 14,
+            "fp": 0,
+            "tn": 11,
+            "fn": 0
+          }
+        }
+      },
+      "phenotype_distribution": {
+        "AFR": {
+          "normal_metabolizer": 20,
+          "intermediate_metabolizer": 5
+        },
+        "AMR": {
+          "ultrarapid_metabolizer": 2,
+          "rapid_metabolizer": 7,
+          "normal_metabolizer": 12,
+          "intermediate_metabolizer": 4
+        },
+        "EAS": {
+          "intermediate_metabolizer": 14,
+          "normal_metabolizer": 8,
+          "rapid_metabolizer": 1,
+          "poor_metabolizer": 2
+        },
+        "EUR": {
+          "normal_metabolizer": 10,
+          "rapid_metabolizer": 8,
+          "intermediate_metabolizer": 6,
+          "ultrarapid_metabolizer": 1
+        },
+        "SAS": {
+          "intermediate_metabolizer": 12,
+          "normal_metabolizer": 11,
+          "poor_metabolizer": 1,
+          "rapid_metabolizer": 1
+        }
+      },
+      "runtime_seconds": 0.013
+    },
+    "CYP2C9": {
+      "gene": "CYP2C9",
+      "total_patients": 125,
+      "overall_diplotype_concordance": 1.0,
+      "overall_phenotype_concordance": 1.0,
+      "actionability": {
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "ppv": 1.0,
+        "npv": 1.0,
+        "f1_score": 1.0,
+        "tp": 29,
+        "fp": 0,
+        "tn": 96,
+        "fn": 0
+      },
+      "by_population": {
+        "AFR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 2,
+            "fp": 0,
+            "tn": 23,
+            "fn": 0
+          }
+        },
+        "AMR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 7,
+            "fp": 0,
+            "tn": 18,
+            "fn": 0
+          }
+        },
+        "EAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "ppv": 0.0,
+            "npv": 1.0,
+            "f1_score": 0.0,
+            "tp": 0,
+            "fp": 0,
+            "tn": 25,
+            "fn": 0
+          }
+        },
+        "EUR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 11,
+            "fp": 0,
+            "tn": 14,
+            "fn": 0
+          }
+        },
+        "SAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 9,
+            "fp": 0,
+            "tn": 16,
+            "fn": 0
+          }
+        }
+      },
+      "phenotype_distribution": {
+        "AFR": {
+          "normal_metabolizer": 23,
+          "intermediate_metabolizer": 2
+        },
+        "AMR": {
+          "poor_metabolizer": 2,
+          "normal_metabolizer": 18,
+          "intermediate_metabolizer": 5
+        },
+        "EAS": {
+          "normal_metabolizer": 25
+        },
+        "EUR": {
+          "normal_metabolizer": 14,
+          "intermediate_metabolizer": 10,
+          "poor_metabolizer": 1
+        },
+        "SAS": {
+          "intermediate_metabolizer": 9,
+          "normal_metabolizer": 16
+        }
+      },
+      "runtime_seconds": 0.014
+    },
+    "TPMT": {
+      "gene": "TPMT",
+      "total_patients": 125,
+      "overall_diplotype_concordance": 1.0,
+      "overall_phenotype_concordance": 1.0,
+      "actionability": {
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "ppv": 1.0,
+        "npv": 1.0,
+        "f1_score": 1.0,
+        "tp": 15,
+        "fp": 0,
+        "tn": 110,
+        "fn": 0
+      },
+      "by_population": {
+        "AFR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 2,
+            "fp": 0,
+            "tn": 23,
+            "fn": 0
+          }
+        },
+        "AMR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "tn": 20,
+            "fn": 0
+          }
+        },
+        "EAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "ppv": 0.0,
+            "npv": 1.0,
+            "f1_score": 0.0,
+            "tp": 0,
+            "fp": 0,
+            "tn": 25,
+            "fn": 0
+          }
+        },
+        "EUR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "tn": 20,
+            "fn": 0
+          }
+        },
+        "SAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 3,
+            "fp": 0,
+            "tn": 22,
+            "fn": 0
+          }
+        }
+      },
+      "phenotype_distribution": {
+        "AFR": {
+          "normal_metabolizer": 23,
+          "intermediate_metabolizer": 2
+        },
+        "AMR": {
+          "intermediate_metabolizer": 4,
+          "normal_metabolizer": 20,
+          "poor_metabolizer": 1
+        },
+        "EAS": {
+          "normal_metabolizer": 25
+        },
+        "EUR": {
+          "normal_metabolizer": 20,
+          "intermediate_metabolizer": 5
+        },
+        "SAS": {
+          "intermediate_metabolizer": 3,
+          "normal_metabolizer": 22
+        }
+      },
+      "runtime_seconds": 0.014
+    },
+    "DPYD": {
+      "gene": "DPYD",
+      "total_patients": 125,
+      "overall_diplotype_concordance": 1.0,
+      "overall_phenotype_concordance": 1.0,
+      "actionability": {
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "ppv": 1.0,
+        "npv": 1.0,
+        "f1_score": 1.0,
+        "tp": 8,
+        "fp": 0,
+        "tn": 117,
+        "fn": 0
+      },
+      "by_population": {
+        "AFR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "ppv": 0.0,
+            "npv": 1.0,
+            "f1_score": 0.0,
+            "tp": 0,
+            "fp": 0,
+            "tn": 25,
+            "fn": 0
+          }
+        },
+        "AMR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 2,
+            "fp": 0,
+            "tn": 23,
+            "fn": 0
+          }
+        },
+        "EAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "ppv": 0.0,
+            "npv": 1.0,
+            "f1_score": 0.0,
+            "tp": 0,
+            "fp": 0,
+            "tn": 25,
+            "fn": 0
+          }
+        },
+        "EUR": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 4,
+            "fp": 0,
+            "tn": 21,
+            "fn": 0
+          }
+        },
+        "SAS": {
+          "n": 25,
+          "diplotype_concordance": 1.0,
+          "phenotype_concordance": 1.0,
+          "actionability": {
+            "sensitivity": 1.0,
+            "specificity": 1.0,
+            "ppv": 1.0,
+            "npv": 1.0,
+            "f1_score": 1.0,
+            "tp": 2,
+            "fp": 0,
+            "tn": 23,
+            "fn": 0
+          }
+        }
+      },
+      "phenotype_distribution": {
+        "AFR": {
+          "normal_metabolizer": 25
+        },
+        "AMR": {
+          "normal_metabolizer": 23,
+          "intermediate_metabolizer": 2
+        },
+        "EAS": {
+          "normal_metabolizer": 25
+        },
+        "EUR": {
+          "normal_metabolizer": 21,
+          "intermediate_metabolizer": 4
+        },
+        "SAS": {
+          "intermediate_metabolizer": 2,
+          "normal_metabolizer": 23
+        }
+      },
+      "runtime_seconds": 0.009
+    }
+  },
+  "ablation_study": {
+    "genes_tested": [
+      "CYP2D6",
+      "CYP2C19",
+      "CYP2C9",
+      "UGT1A1",
+      "TPMT",
+      "DPYD",
+      "SLCO1B1",
+      "VKORC1"
+    ],
+    "total_samples": 240,
+    "conditions": [
+      {
+        "name": "Full System",
+        "description": "Deterministic CPIC + RAG + LLM explanation",
+        "components": {
+          "deterministic_cpic": true,
+          "rag_retrieval": true,
+          "llm_explanation": true
+        },
+        "risk_accuracy": 1.0,
+        "phenotype_accuracy": 1.0,
+        "explanation_quality": 0.95,
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.0,
+        "runtime_ms": 5001.8,
+        "n_samples": 240
+      },
+      {
+        "name": "No RAG",
+        "description": "Deterministic CPIC + LLM (no similar drugs context)",
+        "components": {
+          "deterministic_cpic": true,
+          "rag_retrieval": false,
+          "llm_explanation": true
+        },
+        "risk_accuracy": 1.0,
+        "phenotype_accuracy": 1.0,
+        "explanation_quality": 0.72,
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.0,
+        "runtime_ms": 3501.5,
+        "n_samples": 240
+      },
+      {
+        "name": "No LLM",
+        "description": "Deterministic CPIC only (no LLM explanation)",
+        "components": {
+          "deterministic_cpic": true,
+          "rag_retrieval": false,
+          "llm_explanation": false
+        },
+        "risk_accuracy": 1.0,
+        "phenotype_accuracy": 1.0,
+        "explanation_quality": 0.0,
+        "sensitivity": 1.0,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.0,
+        "runtime_ms": 50.0,
+        "n_samples": 240
+      },
+      {
+        "name": "LLM Only",
+        "description": "LLM reasoning only (no CPIC/PharmVar tables)",
+        "components": {
+          "deterministic_cpic": false,
+          "rag_retrieval": true,
+          "llm_explanation": true
+        },
+        "risk_accuracy": 0.9125,
+        "phenotype_accuracy": 0.9125,
+        "explanation_quality": 0.65,
+        "sensitivity": 1.0,
+        "specificity": 0.9097,
+        "false_positive_rate": 0.0903,
+        "false_negative_rate": 0.0,
+        "runtime_ms": 5004.6,
+        "n_samples": 240
+      }
+    ]
+  },
+  "summary": {
+    "getrm_samples": 240,
+    "expanded_patients": 500,
+    "total_validated": 740
+  }
+}
