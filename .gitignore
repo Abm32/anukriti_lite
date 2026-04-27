@@ -1,4 +1,6 @@
 .env
+.codex/
+.superstack/
 
 # Python
 __pycache__/
@@ -74,11 +76,14 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+qvac/node_modules/
 npm-debug.log
 yarn-error.log
 
 # IDE files
 .kiro/specs/
+.kiro/
+.cursor/
 *.backup
 
 # Environment files
@@ -100,6 +105,16 @@ monitoring_reports/
 # Project specific
 dev_setup_report.json
 drawings.html
+claude-session.jsonl
+codex-session.jsonl
+anukriti-demo/
+anukriti-video/
+demo-video/
+*.mp4
+*.mov
+*.webm
+*.png
+!docs/**/*.png
 
 # Type checking / IDE
 .mypy_cache/
@@ -123,3 +138,14 @@ deepvariant_validation/input/
 
 # Regenerated local ChEMBL fingerprint cache (vector search warm-up)
 data/vector_index_cache/
+
+# Optional/generated cloud, training, and submission artifacts
+aws/
+lambda/
+artifacts/
+training/
+zervehack/
+scripts/
+data/benchmark/
+data/clinical_cases/
+data/models/
