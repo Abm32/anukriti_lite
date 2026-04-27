@@ -54,6 +54,10 @@ git remote -v
 - `docs/COLOSSEUM_SUBMISSION.md`
   - Copy-ready submission brief.
 
+- `docs/COLOSSEUM_PARTNER_STRATEGY.md`
+  - Partner fit map for Phantom, Helius, QVAC, Arcium, World ID, Squads/Altitude,
+    and lower-fit partners.
+
 ## Python Environment
 
 Do not use the default `python` directly. It is:
@@ -264,6 +268,15 @@ If full tests are slow or pull models, at minimum verify:
 5. Open `Solana Proofs` and generate a proof.
 
 6. Optional: configure Solana CLI and submit a devnet memo.
+
+7. If adding sponsor integrations, start with:
+
+   ```text
+   Phantom wallet signing + Helius RPC/proof lookup
+   ```
+
+   Keep Arcium, World ID, and Squads/Altitude as roadmap or second-pass
+   integrations unless there is extra time.
 
 ## Important Product Framing
 

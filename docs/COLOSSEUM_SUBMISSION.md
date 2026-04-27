@@ -81,6 +81,20 @@ npm install
 npm run check
 ```
 
+## Partner Stack
+
+Recommended sponsor/partner stack for Anukriti Lite:
+
+- **Phantom** for wallet-side signing of Solana memo attestations.
+- **Helius** for reliable Solana RPC, proof submission, and memo lookup.
+- **QVAC** for local explanation text from deterministic PGx outputs.
+- **Arcium** as the privacy roadmap for encrypted aggregate cohort analytics.
+- **World ID** as a future reviewer/human verification layer.
+- **Squads Multisig / Altitude** for production signer, treasury, and authority
+  security.
+
+The detailed partner map is in `docs/COLOSSEUM_PARTNER_STRATEGY.md`.
+
 ## Judge Demo Script
 
 1. Start the API:
