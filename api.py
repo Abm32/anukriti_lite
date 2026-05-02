@@ -3983,23 +3983,23 @@ def _anukriti_lite_submission_metadata() -> Dict[str, Any]:
 
     return {
         "one_liner": (
-            "Anukriti Lite turns deterministic pharmacogenomics trial exports into "
-            "private, verifiable Solana proof artifacts, with QVAC available for "
-            "local explanation text."
+            "Anukriti Lite adds a lightweight Web3 verification layer by hashing "
+            "pharmacogenomic simulation outputs and optionally anchoring them "
+            "on-chain for tamper-proof trial validation."
         ),
         "tracks": {
             "colosseum": {
-                "wedge": "PGx trial export provenance, not generic healthcare records.",
+                "wedge": "PGx simulation and trial-decision provenance, not generic healthcare records.",
                 "judge_demo": "POST /lite/demo or Streamlit -> Solana Proofs.",
                 "differentiator": (
-                    "The artifact being proved is a deterministic cohort-stratification "
-                    "export that sponsors can re-verify after generation."
+                    "The artifact being proved is a deterministic simulation output or "
+                    "cohort-stratification export that sponsors can re-verify after generation."
                 ),
             },
             "solana": {
-                "role": "Tamper-evident proof reference for off-chain PGx exports.",
+                "role": "Optional anchoring layer for off-chain PGx simulation proofs.",
                 "on_chain_data": "Only anukriti:<schema_version>:<payload_hash> memo text.",
-                "privacy_boundary": "Sample IDs, genotypes, phenotypes, and recommendations stay off-chain.",
+                "privacy_boundary": "Sensitive genomic data, sample IDs, genotypes, phenotypes, and recommendations stay off-chain.",
                 "default_status": "prepared_not_submitted",
                 "optional_submit_path": "POST /attestations/submit with a configured devnet Solana CLI.",
                 "wallet_submit_path": "GET /lite/phantom for Phantom browser-wallet memo submission.",
@@ -4343,11 +4343,11 @@ async def anukriti_lite_status():
     submission = _anukriti_lite_submission_metadata()
     return {
         "name": "Anukriti Lite",
-        "tagline": "Verifiable trial-export provenance for PGx cohorts on Solana.",
+        "tagline": "Verifiable, tamper-proof validation for PGx trial decisions.",
         "status": "ready",
         "submission": submission,
         "proof_loop": submission["proof_loop"],
-        "privacy_model": "Sample-level PGx rows stay off-chain; Solana sees only a schema label and hash.",
+        "privacy_model": "Sensitive genomic data stays off-chain; Solana sees only a schema label and output hash.",
         "phantom_wallet_demo": "/lite/phantom",
         "rpc_url": resolve_solana_rpc_url("devnet"),
     }
@@ -4388,7 +4388,7 @@ async def anukriti_lite_demo(req: AnukritiLiteDemoRequest):
 
     return {
         "project": "Anukriti Lite",
-        "submission_positioning": "A focused Solana proof layer for deterministic pharmacogenomics trial exports.",
+        "submission_positioning": "A lightweight Web3 verification layer for deterministic pharmacogenomics simulation outputs.",
         "submission": _anukriti_lite_submission_metadata(),
         "export": export_with_attestation,
         "verification": verification,

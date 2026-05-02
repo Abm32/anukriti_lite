@@ -6,17 +6,18 @@ Anukriti Lite
 
 ## One-Liner
 
-Anukriti Lite turns deterministic pharmacogenomics trial exports into private,
-verifiable Solana proof artifacts, with QVAC available for local explanation
-text.
+Anukriti Lite adds a lightweight Web3 verification layer by hashing
+pharmacogenomic simulation outputs and optionally anchoring them on-chain for
+tamper-proof trial validation.
 
 ## Short Description
 
 Anukriti Lite is a focused clinical-trial provenance product. It runs
-deterministic pharmacogenomics logic for trial cohort rows, keeps the sensitive
-rows off-chain, canonicalizes the export, hashes it with SHA-256, and prepares a
-Solana memo proof reference. Sponsors, reviewers, or auditors can later verify
-that the export was not changed after generation.
+deterministic pharmacogenomics logic for trial simulations and cohort rows,
+keeps sensitive genomic data off-chain, canonicalizes the output, hashes it with
+SHA-256, and prepares an optional Solana memo proof reference. Sponsors,
+reviewers, or auditors can later verify that a trial design artifact was not
+changed after generation.
 
 QVAC is integrated as a local LLM explanation backend. It does not decide the
 clinical result. The deterministic PGx engine remains the source of truth, while
@@ -29,10 +30,10 @@ identity, or patient portals. Anukriti Lite is deliberately narrower. It focuses
 on one high-value artifact in clinical research: the pharmacogenomics cohort
 export used to stratify trial participants.
 
-The wedge is:
+The Web3 wedge is:
 
 ```text
-PGx trial export -> canonical JSON -> SHA-256 hash -> Solana memo -> verification
+PGx simulation output -> canonical JSON -> SHA-256 hash -> optional Solana memo -> verification
 ```
 
 That makes the product easy to demo, privacy-preserving by default, and useful
@@ -40,8 +41,8 @@ for real audit workflows.
 
 ## Solana Integration
 
-Solana is the proof layer. The full export stays off-chain. The memo contains
-only:
+Solana is the optional anchoring layer. The full simulation output stays
+off-chain. The memo contains only:
 
 ```text
 anukriti:<schema_version>:<payload_hash>
@@ -128,10 +129,9 @@ Implemented partner hooks:
 
 ## Evaluation Sound Bite
 
-Anukriti Lite is not asking judges to trust an AI answer or upload patient data
-to a chain. It proves a deterministic, off-chain pharmacogenomics artifact with a
-minimal Solana memo, then uses QVAC locally to explain the result without making
-the clinical decision.
+Anukriti adds a cryptographic proof layer by hashing simulation outputs and
+anchoring them on-chain when needed, enabling verifiable, tamper-proof validation
+of trial decisions without exposing sensitive data.
 
 ## Safety Boundary
 

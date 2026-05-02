@@ -3,12 +3,12 @@
 Colosseum submission for privacy-preserving pharmacogenomics trial provenance.
 
 Anukriti Lite combines a deterministic pharmacogenomics engine with AI-generated
-explanations, Solana-ready hash attestations, and an optional QVAC local LLM
-bridge. It is a research prototype and is not intended for clinical use.
+explanations, a lightweight Web3 verification layer, and an optional QVAC local
+LLM bridge. It is a research prototype and is not intended for clinical use.
 
-**Submission thesis:** deterministic PGx trial exports stay private and
-off-chain; Solana anchors a compact proof reference; QVAC explains the
-deterministic result locally without becoming the decision-maker.
+**Submission thesis:** Anukriti hashes simulation outputs and optionally anchors
+them on-chain, enabling verifiable, tamper-proof validation of trial decisions
+without exposing sensitive genomic data.
 
 ## What It Does
 
@@ -17,6 +17,7 @@ deterministic result locally without becoming the decision-maker.
   SLCO1B1, TPMT, DPYD, HLA-B*57:01, and HLA-B*15:02.
 - Keeps patient data and full simulation outputs off-chain.
 - Hashes canonical simulation/export payloads with SHA-256.
+- Creates tamper-evident Web3 proof artifacts for trial design decisions.
 - Produces Solana memo strings in the form
   `anukriti:<schema_version>:<payload_hash>`.
 - Adds a QVAC partner-track backend for local LLM explanations via `@qvac/sdk`.

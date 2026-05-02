@@ -1,6 +1,6 @@
 # Anukriti Solana Attestations
 
-Anukriti keeps pharmacogenomics data off-chain and anchors only a deterministic proof reference on Solana.
+Anukriti integrates a lightweight Web3 verification layer where each simulation output is cryptographically hashed and can be anchored on-chain. The sensitive pharmacogenomics data stays off-chain; Solana stores only a deterministic proof reference.
 
 ## Flow
 

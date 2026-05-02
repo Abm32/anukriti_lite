@@ -2,9 +2,9 @@
 
 ## Positioning
 
-Anukriti Lite is the Colosseum-facing version of Anukriti: a focused Solana proof
-layer for deterministic pharmacogenomics trial exports, with QVAC as the local
-explanation layer.
+Anukriti Lite is the Colosseum-facing version of Anukriti: a lightweight Web3
+verification layer for deterministic pharmacogenomics simulation outputs and
+trial exports, with QVAC as the local explanation layer.
 
 The product claim is deliberately narrow:
 
@@ -19,9 +19,25 @@ The product claim is deliberately narrow:
 The submission thesis is:
 
 ```text
-deterministic PGx export -> private off-chain artifact -> Solana proof reference
--> QVAC local explanation -> reproducible verification
+deterministic PGx simulation -> private off-chain artifact -> SHA-256 hash
+-> optional Solana memo anchor -> reproducible verification
 ```
+
+## Do We Need A Smart Contract?
+
+Not for the current grant scope. The proof requirement is to make a simulation
+artifact tamper-evident without exposing genomic data. A Solana Memo transaction
+is enough for that because it immutably timestamps the compact string:
+
+```text
+anukriti:<schema_version>:<payload_hash>
+```
+
+A custom smart contract becomes useful later if Anukriti needs richer on-chain
+state: project registries, reviewer permissions, cohort version indexes,
+revocation, paid attestations, or program-owned authority rules. For the grant
+demo, Memo is smaller, cheaper, easier to audit, and already compatible with
+Phantom/browser-wallet signing.
 
 ## Demo Flow
 
@@ -47,7 +63,10 @@ tamper failure, and downloadable JSON.
 
 The main `Simulation Lab` also includes a `Solana Proof` result tab after each
 run. That tab displays the per-simulation payload hash, schema, memo, proof
-status, and downloadable proof JSON.
+status, and downloadable proof JSON. The normal `Run Simulation` workflow also
+has an optional `Anchor proof on Solana devnet after simulation` checkbox. When
+enabled, the backend submits the memo after the analysis returns and updates the
+attestation with the transaction signature and Explorer URL.
 
 ## API Surface
 
@@ -70,7 +89,7 @@ out the Colosseum wedge, the Solana privacy boundary, and the QVAC role.
 ## QVAC Partner Track
 
 QVAC is wired as an optional local LLM explanation backend without replacing the
-deterministic PGx engine or Solana proof layer.
+deterministic PGx engine or Web3 verification layer.
 
 ```bash
 cd qvac
@@ -107,8 +126,27 @@ streamlit run app.py
 
 The default demo prepares the memo proof without submitting it. To submit through
 the backend, configure the Solana CLI with a funded devnet keypair, then use the
-`Submit memo to Solana devnet with local CLI` checkbox in the Streamlit page or
-call `POST /lite/demo` with:
+`Anchor proof on Solana devnet after simulation` checkbox in the main Simulation
+Lab, the `Anchor this proof to Solana devnet` button on the Solana Proofs page,
+or call `POST /attestations/submit` with an attestation.
+
+Setup:
+
+```bash
+solana config set --url devnet
+solana-keygen new --outfile ~/.config/solana/id.json
+solana airdrop 2
+solana balance
+```
+
+Optional `.env` values:
+
+```bash
+SOLANA_RPC_URL=https://devnet.helius-rpc.com/?api-key=your_helius_key
+SOLANA_KEYPAIR_PATH=/home/you/.config/solana/id.json
+```
+
+You can also use the older one-shot Lite demo submission path:
 
 ```json
 {

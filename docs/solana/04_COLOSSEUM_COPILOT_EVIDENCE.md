@@ -26,4 +26,4 @@ privacy-preserving clinical trial pharmacogenomics healthcare AI attestation ver
 
 ## Differentiation
 
-Anukriti Attestations focuses on deterministic pharmacogenomics trial-export provenance. It keeps sample-level PGx rows off-chain and anchors only a canonical export hash/memo on Solana devnet. That is narrower than generic healthcare records, health data NFT marketplaces, or broad federated clinical research infrastructure.
+Anukriti's Web3 verification layer focuses on deterministic pharmacogenomics simulation and trial-decision provenance. It keeps sensitive genomic data and sample-level PGx rows off-chain and anchors only a canonical output hash/memo on Solana devnet. That is narrower than generic healthcare records, health data NFT marketplaces, or broad federated clinical research infrastructure.

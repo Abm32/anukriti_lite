@@ -9,10 +9,10 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 ## Step 1: Basics
 
 **Project Title**
-> Anukriti Attestations
+> Anukriti Web3 Verification Layer
 
 **One Line Description**
-> A Solana devnet proof layer for Anukriti that turns deterministic PGx trial exports into privacy-preserving, tamper-evident cohort attestations.
+> A lightweight Web3 proof layer that hashes Anukriti simulation outputs and optionally anchors them on-chain for privacy-preserving, tamper-proof trial validation.
 
 **TG username**
 > t.me/abhimanyurb
@@ -25,9 +25,9 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 **Project Details**
 > Anukriti, initially built under the SynthaTrial name, is an AI-assisted pharmacogenomics platform for clinical-trial cohort stratification. The system uses deterministic CPIC/PharmVar logic for PGx calls; AI helps with explanation, review, and engineering, but does not make the clinical decision.
 >
-> This grant funds the Solana attestation layer. The product now prepares a privacy-preserving SHA-256 attestation for `/trial/export` payloads and a Solana devnet memo string that can be anchored in a transaction. Sensitive sample-level genomic rows stay off-chain; the chain stores only a hash/proof reference so sponsors and reviewers can verify that a cohort export was not changed after generation.
+> This grant funds a lightweight Web3 verification layer where each simulation output is cryptographically hashed and can be anchored on-chain. The product now prepares privacy-preserving SHA-256 attestations for `/trial/export` payloads and Solana devnet memo strings that can be included in transactions. Sensitive sample-level genomic rows stay off-chain; the chain stores only a hash/proof reference so sponsors and reviewers can verify that a trial design artifact was not changed after generation.
 >
-> The wedge is deliberately narrow: PGx trial export -> deterministic canonical hash -> Solana devnet memo/proof -> later verification. This is stronger than a generic healthcare data app because it focuses on provenance for high-value clinical-trial artifacts.
+> The wedge is deliberately narrow: PGx simulation or trial export -> deterministic canonical hash -> optional Solana devnet memo/proof -> later verification. This creates a tamper-proof, auditable record of trial design decisions without exposing sensitive genomic data.
 
 **Deadline**
 > April 24, 2026, Asia/Calcutta
@@ -56,7 +56,7 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 **Colosseum Crowdedness Score**
 > Colosseum Copilot evidence: nearest cluster is `v1-c7`, "Solana-Based Healthcare Solutions", with 78 projects and 1 winner. Closest match: Dezi Network, a privacy-preserving decentralized clinical research framework using ZKPs and federated learning on Solana.
 >
-> Differentiation: Anukriti Attestations is narrower and more verifiable: deterministic PGx trial-stratification export provenance, not generic medical records, health data NFTs, or broad federated clinical research infrastructure.
+> Differentiation: Anukriti's Web3 verification layer is narrower and more verifiable: deterministic PGx simulation and trial-stratification provenance, not generic medical records, health data NFTs, or broad federated clinical research infrastructure.
 >
 > Evidence link: https://github.com/Abm32/Synthatrial/blob/solana-anukriti/docs/COLOSSEUM_COPILOT_EVIDENCE.md
 >
@@ -75,7 +75,7 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 > 5. April 24, 2026: Submit final repo, AI transcript, Colosseum link, and demo notes.
 
 **Primary KPI**
-> One reproducible end-to-end attestation demo with deterministic hash verification and a Solana devnet memo/proof reference for an Anukriti trial export.
+> One reproducible end-to-end proof demo with deterministic hash verification and an optional Solana devnet memo/proof reference for an Anukriti simulation or trial export.
 
 **Final Tranche Checkbox**
 > I understand that to receive the final tranche I must submit the Colosseum project link, GitHub repo, and AI subscription receipt.

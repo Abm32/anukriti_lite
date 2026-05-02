@@ -167,6 +167,40 @@ def _safe_json(obj) -> str:
     return json.dumps(obj, indent=2, default=str)
 
 
+def _submit_attestation_from_ui(
+    api_url: str, attestation: Dict[str, Any], *, key_prefix: str
+) -> Optional[Dict[str, Any]]:
+    """Submit a prepared attestation memo through the backend Solana CLI path."""
+
+    if not attestation:
+        st.warning("No attestation is available to submit.")
+        return None
+    payload = {
+        "attestation": attestation,
+        "keypair_path": os.getenv("SOLANA_KEYPAIR_PATH", "").strip() or None,
+        "rpc_url": os.getenv("SOLANA_RPC_URL", "").strip() or None,
+    }
+    try:
+        with st.spinner("Submitting memo to Solana devnet..."):
+            resp = requests.post(
+                f"{api_url}/attestations/submit",
+                json=payload,
+                timeout=75,
+            )
+            resp.raise_for_status()
+            result = resp.json()
+    except Exception as exc:
+        st.error(f"Solana submission failed: {exc}")
+        return None
+
+    if result.get("submitted"):
+        st.success("Memo anchored on Solana devnet.")
+    else:
+        st.warning(result.get("message") or "Memo was prepared but not submitted.")
+    st.session_state[f"{key_prefix}_submission_result"] = result
+    return result
+
+
 def _normalize_context_sources(raw: Any) -> str:
     if raw is None:
         return ""
@@ -886,6 +920,15 @@ if nav == "Simulation Lab":
                 novel_enzymes = []
                 novel_transporters = []
                 novel_notes = ""
+        anchor_simulation_to_devnet = st.checkbox(
+            "Anchor proof on Solana devnet after simulation",
+            value=False,
+            key="anchor_simulation_to_devnet",
+            help=(
+                "Optional. The simulation is always hashed locally. This also submits "
+                "the hash memo using the backend host's Solana CLI and funded devnet keypair."
+            ),
+        )
         run_clicked = st.button("🚀 Run Simulation", use_container_width=True)
         st.markdown(
             '<div class="panel-footer">Engine: v0.2.0 • CPIC tier-1 panel (16 genes + HLA proxies)</div>',
@@ -1781,6 +1824,22 @@ Conditions: Hypertension, Hyperlipidemia
                         ehr_bundle = data.get("ehr_bundle") or None
                         attestation = data.get("attestation") or {}
                         novel_payload = data.get("novel_drug") or {}
+                        if anchor_simulation_to_devnet and attestation and backend_online:
+                            submission = _submit_attestation_from_ui(
+                                api_url,
+                                attestation,
+                                key_prefix="simulation_attestation",
+                            )
+                            updated_attestation = (
+                                submission or {}
+                            ).get("attestation")
+                            if updated_attestation:
+                                attestation = updated_attestation
+                                data["attestation"] = updated_attestation
+                        elif anchor_simulation_to_devnet and not backend_online:
+                            st.warning(
+                                "Backend is offline, so the proof was not submitted to Solana."
+                            )
 
                         # --- Results pipeline tabs ---
                         st.markdown("---")
@@ -2097,11 +2156,12 @@ Conditions: Hypertension, Hyperlipidemia
                                 st.markdown("**Sources:** " + context_sources)
 
                         with pipe_tab4:
-                            st.markdown("### Solana-ready simulation proof")
+                            st.markdown("### Web3 verification proof")
                             if attestation:
                                 solana = attestation.get("solana") or {}
                                 st.success(
-                                    "This simulation result is hashed inside the analysis pipeline and ready to anchor as a Solana memo."
+                                    "This simulation output is cryptographically hashed inside the analysis pipeline. "
+                                    "Only the schema label and hash are sent on-chain when you anchor it."
                                 )
                                 p1, p2, p3 = st.columns([2, 1, 1])
                                 with p1:
@@ -2129,6 +2189,21 @@ Conditions: Hypertension, Hyperlipidemia
                                         "Open Solana Explorer",
                                         solana["explorer_url"],
                                     )
+                                elif backend_online:
+                                    st.caption(
+                                        "To anchor this run, enable the Solana devnet checkbox before running the simulation."
+                                    )
+                                submission_result = st.session_state.get(
+                                    "simulation_attestation_submission_result"
+                                )
+                                if submission_result:
+                                    with st.expander(
+                                        "Latest Solana submission result",
+                                        expanded=bool(
+                                            submission_result.get("submitted")
+                                        ),
+                                    ):
+                                        st.json(submission_result)
                                 st.download_button(
                                     "⬇️ Download simulation proof JSON",
                                     data=_safe_json(
@@ -2582,8 +2657,8 @@ elif nav == "Datasets":
 elif nav == "Solana Proofs":
     st.markdown("### 🔐 Anukriti Lite: Solana Trial Export Proofs")
     st.caption(
-        "Colosseum-facing proof loop inside the main Anukriti prototype: deterministic PGx export → "
-        "canonical SHA-256 hash → Solana memo reference → local verification → tamper failure."
+        "Lightweight Web3 verification loop: deterministic PGx simulation output → "
+        "canonical SHA-256 hash → optional Solana memo reference → local verification → tamper failure."
     )
 
     api_url = os.getenv("API_URL", "http://127.0.0.1:8000")
@@ -2591,8 +2666,8 @@ elif nav == "Solana Proofs":
         api_url = api_url.replace("localhost", "127.0.0.1")
 
     st.info(
-        "Privacy model: sample-level PGx rows stay off-chain. The Solana memo contains only "
-        "the Anukriti schema label and export hash."
+        "Privacy model: sensitive genomic data and sample-level PGx rows stay off-chain. "
+        "The Solana memo contains only the Anukriti schema label and output hash."
     )
     st.markdown("#### Submission wedge")
     wedge_col, solana_col, qvac_col = st.columns(3)
@@ -2691,6 +2766,22 @@ elif nav == "Solana Proofs":
         explorer_url = solana.get("explorer_url")
         if explorer_url:
             st.link_button("Open Solana Explorer", explorer_url)
+        elif st.button("Anchor this proof to Solana devnet", key="lite_submit_memo"):
+            submission = _submit_attestation_from_ui(
+                api_url,
+                attestation,
+                key_prefix="lite_attestation",
+            )
+            updated_attestation = (submission or {}).get("attestation")
+            if updated_attestation:
+                proof_demo["export"]["attestation"] = updated_attestation
+                st.session_state["solana_proof_demo"] = proof_demo
+                st.rerun()
+
+        lite_submission_result = st.session_state.get("lite_attestation_submission_result")
+        if lite_submission_result:
+            with st.expander("Latest Solana submission result", expanded=False):
+                st.json(lite_submission_result)
 
         st.markdown("#### Cohort Export Rows")
         rows = export.get("rows", [])

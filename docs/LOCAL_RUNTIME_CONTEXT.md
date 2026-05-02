@@ -336,7 +336,7 @@ Use this explanation if asked what QVAC does:
 ```text
 QVAC is the local explanation layer. It receives de-identified context and
 deterministic PGx results, then writes concise clinical explanation text. It does
-not decide the PGx result and it is separate from the Solana proof layer.
+not decide the PGx result and it is separate from the Web3 verification layer.
 ```
 
 Use this explanation if asked what Solana does:
