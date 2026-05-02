@@ -12,7 +12,7 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 > Anukriti Web3 Verification Layer
 
 **One Line Description**
-> A lightweight Web3 proof layer that hashes Anukriti simulation outputs and optionally anchors them on-chain for privacy-preserving, tamper-proof trial validation.
+> Anukriti hashes PGx simulation outputs and anchors them on-chain for private, tamper-proof trial validation.
 
 **TG username**
 > t.me/abhimanyurb
@@ -30,7 +30,7 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 > The wedge is deliberately narrow: PGx simulation or trial export -> deterministic canonical hash -> optional Solana devnet memo/proof -> later verification. This creates a tamper-proof, auditable record of trial design decisions without exposing sensitive genomic data.
 
 **Deadline**
-> April 24, 2026, Asia/Calcutta
+> May 31, 2026, Asia/Calcutta
 
 **Proof of Work**
 > GitHub repo: https://github.com/Abm32/Synthatrial
@@ -68,11 +68,11 @@ The form asks for proof of your Colosseum Copilot crowdedness/landscape check. T
 ## Step 3: Milestones
 
 **Goals and Milestones**
-> 1. April 18, 2026: Define and document the trial-export attestation schema.
-> 2. April 20, 2026: Ship deterministic local attestation generation for `/trial/export`.
-> 3. April 22, 2026: Add the Solana devnet memo/proof path and verification tests.
-> 4. April 23, 2026: Record an end-to-end demo: PGx export -> attestation -> Solana proof reference -> verification.
-> 5. April 24, 2026: Submit final repo, AI transcript, Colosseum link, and demo notes.
+> 1. May 7, 2026: Finalize the simulation-output attestation schema and grant demo flow.
+> 2. May 14, 2026: Integrate proof generation into the main Anukriti simulation workflow.
+> 3. May 21, 2026: Complete optional Solana devnet anchoring, lookup verification, and tamper-failure tests.
+> 4. May 28, 2026: Polish Streamlit judge demo, setup docs, and submission copy.
+> 5. May 31, 2026: Submit final repo, AI transcript Drive link, Colosseum link, and demo notes.
 
 **Primary KPI**
 > One reproducible end-to-end proof demo with deterministic hash verification and an optional Solana devnet memo/proof reference for an Anukriti simulation or trial export.
